@@ -43,6 +43,38 @@
           />
         </div>
 
+        <fieldset class="form-group">
+  <legend>Sound</legend>
+
+  <label>
+    <input type="radio" name="soundMode" id="soundModeDefault" value="default" checked>
+    Use default sound
+  </label>
+
+  <label>
+    <input type="radio" name="soundMode" id="soundModeUpload" value="upload">
+    Upload MP3
+  </label>
+
+  <label>
+    <input type="radio" name="soundMode" id="soundModeBrowse" value="browse">
+    Browse sounds
+  </label>
+</fieldset>
+
+<section id="browseSoundSection" class="form-group">
+  <label for="soundSearch">Search sounds:</label>
+  <input type="text" id="soundSearch" placeholder="Try: alarm, beep, bell" />
+
+  <button id="soundSearchBtn" type="button">Search</button>
+
+  <p id="soundStatus" aria-live="polite"></p>
+
+  <audio id="soundPreviewPlayer" controls></audio>
+
+  <div id="soundResults"></div>
+</section>
+
         <div class="time-inputs">
           <div class="form-group">
             <label for="hours">Hours:</label>
@@ -63,7 +95,7 @@
         <button type="submit" class="btn-primary">Add Timer</button>
       </form>
     </section>
-    
+
     <section class="timers-container">
       <h2>Active Timers</h2>
       <div id="timersList"></div>

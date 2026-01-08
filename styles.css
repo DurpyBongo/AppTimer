@@ -1,0 +1,444 @@
+/* ============================
+   Global Styles & Reset
+   ============================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+  color: #333;
+}
+
+/* ============================
+   Container & Layout
+   ============================ */
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ============================
+   Sections
+   ============================ */
+section {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+section:last-child {
+  border-bottom: none;
+}
+
+section h2 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  color: #333;
+  font-weight: 600;
+}
+
+/* ============================
+   Permission Section
+   ============================ */
+#permissionSection {
+  background: #f0f4ff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+#permissionSection p {
+  margin: 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+/* ============================
+   Form Styles
+   ============================ */
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="file"],
+audio {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="file"]:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* ============================
+   Radio Buttons (Fieldset)
+   ============================ */
+fieldset {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+fieldset legend {
+  padding: 0 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+fieldset label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-weight: 400;
+  margin-left: 0;
+}
+
+fieldset label:last-child {
+  margin-bottom: 0;
+}
+
+input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+/* ============================
+   Hidden Sections
+   ============================ */
+#uploadSoundSection,
+#browseSoundSection {
+  display: none;
+}
+
+/* ============================
+   Browse Sounds
+   ============================ */
+#soundSearchBtn {
+  width: auto;
+  padding: 8px 16px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#soundStatus {
+  font-size: 0.9rem;
+  color: #667eea;
+  margin: 10px 0;
+  font-weight: 500;
+}
+
+#soundPreviewPlayer {
+  width: 100%;
+  margin: 10px 0;
+}
+
+#soundResults {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sound-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 6px;
+  border: 1px solid #eee;
+}
+
+.sound-name {
+  flex: 1;
+  font-weight: 500;
+  color: #333;
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+.sound-result button {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* ============================
+   Time Inputs (Horizontal)
+   ============================ */
+.time-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.time-inputs .form-group {
+  margin-bottom: 0;
+}
+
+.time-inputs label {
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.time-inputs input {
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ============================
+   Buttons
+   ============================ */
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 1rem;
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+#requestPermissionBtn {
+  background: #667eea;
+  color: white;
+  padding: 10px 16px;
+}
+
+#requestPermissionBtn:hover {
+  background: #764ba2;
+}
+
+#soundSearchBtn {
+  background: #667eea;
+  color: white;
+}
+
+#soundSearchBtn:hover {
+  background: #764ba2;
+}
+
+.sound-result button {
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+.sound-result button:hover:not(:disabled) {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.sound-result button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================
+   Timers Container
+   ============================ */
+.timers-container {
+  padding: 20px;
+  background: #fafafa;
+}
+
+#timersList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Empty state */
+#timersList:empty::after {
+  content: "No active timers yet. Create one above!";
+  text-align: center;
+  color: #999;
+  padding: 20px;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+/* ============================
+   Timer Card
+   ============================ */
+.timer-card {
+  background: white;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.timer-card .title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.timer-card .sound {
+  font-size: 0.85rem;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.timer-card .time {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #764ba2;
+  text-align: center;
+  padding: 10px 0;
+  font-family: 'Courier New', monospace;
+}
+
+.timer-card .time.done {
+  color: #10b981;
+  animation: pulse 0.6s ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* ============================
+   Responsive
+   ============================ */
+@media (max-width: 600px) {
+  .container {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  section {
+    padding: 15px;
+  }
+
+  #permissionSection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #requestPermissionBtn {
+    width: 100%;
+  }
+
+  .time-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .sound-result {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sound-result button {
+    width: 100%;
+  }
+}
+
+/* ============================
+   Utility
+   ============================ */
+audio {
+  outline: none;
+}
+
+p {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+}

@@ -13,27 +13,15 @@
       <h1>⏱️ App Timer Manager</h1>
     </header>
 
-    <!-- Permission section (shown until notifications are granted/denied) -->
     <section id="permissionSection">
       <p>Enable notifications to get alerts when timers expire</p>
       <button id="requestPermissionBtn" type="button">Enable Notifications</button>
     </section>
 
-    <!-- Form section for adding timers -->
     <section class="timer-form">
       <h2>Add New Timer</h2>
 
       <form id="timerForm">
-        <div class="form-group">
-  <label for="timerSound">Timer sound (MP3):</label>
-  <input
-    type="file"
-    id="timerSound"
-    name="timerSound"
-    accept="audio/mpeg,audio/*,.mp3"
-  />
-</div>
-
         <div class="form-group">
           <label for="appName">App Name:</label>
           <input
@@ -42,6 +30,16 @@
             name="appName"
             placeholder="Enter app name"
             required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="timerSound">Timer sound (MP3):</label>
+          <input
+            type="file"
+            id="timerSound"
+            name="timerSound"
+            accept="audio/mpeg,audio/*,.mp3"
           />
         </div>
 
@@ -65,23 +63,19 @@
         <button type="submit" class="btn-primary">Add Timer</button>
       </form>
     </section>
-
-    <!-- Timers render here (JS will fill this div) -->
+    
     <section class="timers-container">
       <h2>Active Timers</h2>
       <div id="timersList"></div>
     </section>
   </div>
 
-  <!-- Hidden audio used for timer end sound -->
-  <audio id="notificationSound" preload="auto">
-    <source src="notification-sound.mp3" type="audio/mpeg" />
-    Your browser does not support the audio element.
-  </audio>
+  <!-- Keep the audio element (empty for now) so JS can use it later if needed -->
+  <audio id="notificationSound" preload="auto"></audio>
 
-  <!-- Load JS at the bottom so the DOM exists before script runs -->
   <script src="script.js"></script>
 </body>
 </html>
+
 
 

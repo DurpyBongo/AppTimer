@@ -64,7 +64,7 @@ soundModeBrowse.addEventListener("change", updateSoundModeUI);
 // ============================
 // Put your Freesound API token here later.
 // You need it to call the API. [web:212][web:215]
-const FREESOUND_TOKEN = ""; // <-- add later
+const FREESOUND_TOKEN = window.APP_CONFIG?.FREESOUND_TOKEN || "";
 
 let selectedBrowseSound = null; // { name, previewUrl }
 

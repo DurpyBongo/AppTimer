@@ -7,6 +7,7 @@
     <title>App Timer Manager</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="container">
     <header>
@@ -33,7 +34,44 @@
           />
         </div>
 
-        <div class="form-group">
+        <!-- Sound mode choice -->
+        <fieldset class="form-group" id="soundModeSection">
+          <legend>Sound</legend>
+
+          <label>
+            <input
+              type="radio"
+              name="soundMode"
+              id="soundModeDefault"
+              value="default"
+              checked
+            />
+            Use default sound
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="soundMode"
+              id="soundModeUpload"
+              value="upload"
+            />
+            Upload MP3
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="soundMode"
+              id="soundModeBrowse"
+              value="browse"
+            />
+            Browse sounds
+          </label>
+        </fieldset>
+
+        <!-- Upload sound (shown when Upload is selected) -->
+        <section id="uploadSoundSection" class="form-group">
           <label for="timerSound">Timer sound (MP3):</label>
           <input
             type="file"
@@ -41,39 +79,26 @@
             name="timerSound"
             accept="audio/mpeg,audio/*,.mp3"
           />
-        </div>
+        </section>
 
-        <fieldset class="form-group">
-  <legend>Sound</legend>
+        <!-- Browse + preview (shown when Browse is selected) -->
+        <section id="browseSoundSection" class="form-group">
+          <label for="soundSearch">Search sounds:</label>
+          <input
+            type="text"
+            id="soundSearch"
+            name="soundSearch"
+            placeholder="Try: alarm, beep, bell"
+          />
 
-  <label>
-    <input type="radio" name="soundMode" id="soundModeDefault" value="default" checked>
-    Use default sound
-  </label>
+          <button id="soundSearchBtn" type="button">Search</button>
 
-  <label>
-    <input type="radio" name="soundMode" id="soundModeUpload" value="upload">
-    Upload MP3
-  </label>
+          <p id="soundStatus" aria-live="polite"></p>
 
-  <label>
-    <input type="radio" name="soundMode" id="soundModeBrowse" value="browse">
-    Browse sounds
-  </label>
-</fieldset>
+          <audio id="soundPreviewPlayer" controls></audio>
 
-<section id="browseSoundSection" class="form-group">
-  <label for="soundSearch">Search sounds:</label>
-  <input type="text" id="soundSearch" placeholder="Try: alarm, beep, bell" />
-
-  <button id="soundSearchBtn" type="button">Search</button>
-
-  <p id="soundStatus" aria-live="polite"></p>
-
-  <audio id="soundPreviewPlayer" controls></audio>
-
-  <div id="soundResults"></div>
-</section>
+          <div id="soundResults"></div>
+        </section>
 
         <div class="time-inputs">
           <div class="form-group">
@@ -102,7 +127,7 @@
     </section>
   </div>
 
-  <!-- Keep the audio element (empty for now) so JS can use it later if needed -->
+  <!-- For later: default/selected timer completion sound playback -->
   <audio id="notificationSound" preload="auto"></audio>
 
   <script src="script.js"></script>

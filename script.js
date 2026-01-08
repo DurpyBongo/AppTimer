@@ -263,11 +263,22 @@ timerForm.addEventListener("submit", (event) => {
 
   // Countdown (for now: just text; later you can trigger notification + sound)
   startCountdown(time, totalSeconds, () => {
-    // Placeholder: later you’ll actually play:
-    // - default => notificationSound.play()
-    // - upload => URL.createObjectURL(file) then play
-    // - browse => play preview URL
-  });
+  // Timer finished! Play sound now.
+  if (soundType === "default") {
+    // Play the default sound
+    notificationSound.play();
+  } else if (soundType === "upload" && soundData) {
+    // Play uploaded MP3
+    const url = URL.createObjectURL(soundData);
+    const audio = new Audio(url);
+    audio.play();
+  } else if (soundType === "browse" && soundData) {
+    // Play preview sound from Freesound
+    const audio = new Audio(soundData);
+    audio.play();
+  }
+});
+
 
   // Optional reset
   timerForm.reset();

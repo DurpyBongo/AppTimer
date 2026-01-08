@@ -104,7 +104,7 @@ async function searchFreesound(query) {
       Authorization: `Token ${FREESOUND_TOKEN}`
     }
   }); // fetch() returns a Promise for a Response [web:267]
-
+console.log(response)
   if (!response.ok) {
     setStatus(`Search failed (HTTP ${response.status}).`);
     return [];

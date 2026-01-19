@@ -256,30 +256,38 @@ function renderPresets() {
       toast("Removed saved timer");
     });
 
-    row.addEventListener("click", () => {
-      appNameInput.value = p.appName;
+    const loadBtn = document.createElement("button");
+loadBtn.type = "button";
+loadBtn.textContent = "Load";
 
-      const h = Math.floor(p.totalSeconds / 3600);
-      const m = Math.floor((p.totalSeconds % 3600) / 60);
-      const s = p.totalSeconds % 60;
+loadBtn.addEventListener("click", (e) => {
+  e.stopPropagation(); // keeps things clean [web:145]
 
-      hoursInput.value = h;
-      minutesInput.value = m;
-      secondsInput.value = s;
+  appNameInput.value = p.appName;
 
-      if (p.soundType === "browse" && p.selectedBrowseSound?.previewUrl) {
-        soundModeBrowse.checked = true;
-        selectedBrowseSound = p.selectedBrowseSound;
-        setStatus(`Loaded saved sound: ${selectedBrowseSound.name}`);
-        setPreview(selectedBrowseSound.previewUrl);
-      } else {
-        soundModeDefault.checked = true;
-        selectedBrowseSound = null;
-      }
+  const h = Math.floor(p.totalSeconds / 3600);
+  const m = Math.floor((p.totalSeconds % 3600) / 60);
+  const s = p.totalSeconds % 60;
 
-      updateSoundModeUI();
-      toast("Loaded saved timer");
-    });
+  hoursInput.value = h;
+  minutesInput.value = m;
+  secondsInput.value = s;
+
+  if (p.soundType === "browse" && p.selectedBrowseSound?.previewUrl) {
+    soundModeBrowse.checked = true;
+    selectedBrowseSound = p.selectedBrowseSound;
+    setStatus(`Loaded saved sound: ${selectedBrowseSound.name}`);
+    setPreview(selectedBrowseSound.previewUrl);
+  } else {
+    soundModeDefault.checked = true;
+    selectedBrowseSound = null;
+  }
+
+  updateSoundModeUI();
+  toast("Loaded saved timer");
+});
+
+row.appendChild(loadBtn);
 
     row.appendChild(label);
     row.appendChild(del);

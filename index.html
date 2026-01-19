@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="App Timer Manager - Track and manage timers for your applications">
-    <title>App Timer Manager</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="App Timer Manager - Track and manage timers for your applications" />
+  <title>App Timer Manager</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
@@ -22,6 +22,7 @@
     <section class="timer-form">
       <h2>Add New Timer</h2>
 
+      <!-- IMPORTANT: only ONE form tag -->
       <form id="timerForm">
         <div class="form-group">
           <label for="appName">App Name:</label>
@@ -127,17 +128,15 @@
     </section>
   </div>
 
-  <!-- For later: default/selected timer completion sound playback -->
+  <!-- Default/selected timer completion sound playback -->
   <audio id="notificationSound" preload="auto">
-  <source src="DefaultYOnotification.mp3" type="audio/mpeg">
-</audio>
+    <source src="DefaultYOnotification.mp3" type="audio/mpeg" />
+  </audio>
 
+  <!-- Toast popup -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="config.js"></script>
   <script src="script.js"></script>
-
 </body>
 </html>
-
-
-

@@ -1,4 +1,49 @@
 // ============================
+// 0) Helpers / Toast / Storage
+// ============================
+const toastEl = document.getElementById("toast");
+let toastTimer = null;
+
+function toast(msg) {
+  if (!toastEl) return;
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1800);
+}
+
+const PRESET_KEY = "app_timer_presets_v1";
+function loadPresets() {
+  try {
+    return JSON.parse(localStorage.getItem(PRESET_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+function savePresets(list) {
+  localStorage.setItem(PRESET_KEY, JSON.stringify(list));
+}
+
+let presets = loadPresets();
+
+// Notification helper
+function notifyTimerDone(appName) {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "granted") {
+    new Notification("Timer done", { body: `${appName} finished.` });
+  }
+}
+
+// Alarm audio helper
+let currentAlarmAudio = null;
+function stopAlarm() {
+  if (!currentAlarmAudio) return;
+  currentAlarmAudio.pause();
+  currentAlarmAudio.currentTime = 0;
+  currentAlarmAudio = null;
+}
+
+// ============================
 // 1) Grab DOM elements
 // ============================
 const permissionSection = document.getElementById("permissionSection");
@@ -26,58 +71,70 @@ const soundResults = document.getElementById("soundResults");
 
 const timersList = document.getElementById("timersList");
 
-// Used later for "default sound" if you add it
+// Default notification sound <audio>
 const notificationSound = document.getElementById("notificationSound");
 
+// OPTIONAL: sidebar saved list container (only works if you add it to HTML)
+const savedList = document.getElementById("savedList");
+
 // ============================
-// 2) Notification permission
+// 2) Notifications permission
 // ============================
-requestPermissionBtn.addEventListener("click", async () => {
-  if (!("Notification" in window)) return;
-  await Notification.requestPermission();
-});
+function updatePermissionUI() {
+  if (!permissionSection) return;
+  if (!("Notification" in window)) {
+    permissionSection.style.display = "none";
+    return;
+  }
+
+  // Hide section if already granted
+  permissionSection.style.display =
+    Notification.permission === "granted" ? "none" : "flex";
+}
+
+if (requestPermissionBtn) {
+  requestPermissionBtn.addEventListener("click", async () => {
+    if (!("Notification" in window)) return;
+    await Notification.requestPermission(); // should be user gesture [page:1]
+    updatePermissionUI();
+  });
+}
 
 // ============================
 // 3) Sound mode UI (show/hide)
 // ============================
 function getSoundMode() {
-  if (soundModeUpload.checked) return "upload";
-  if (soundModeBrowse.checked) return "browse";
+  if (soundModeUpload?.checked) return "upload";
+  if (soundModeBrowse?.checked) return "browse";
   return "default";
 }
 
 function updateSoundModeUI() {
   const mode = getSoundMode();
-
-  // Show the one that matches; hide the others
-  uploadSoundSection.style.display = mode === "upload" ? "block" : "none";
-  browseSoundSection.style.display = mode === "browse" ? "block" : "none";
+  if (uploadSoundSection) uploadSoundSection.style.display = mode === "upload" ? "block" : "none";
+  if (browseSoundSection) browseSoundSection.style.display = mode === "browse" ? "block" : "none";
 }
 
-// Update whenever radio selection changes
-soundModeDefault.addEventListener("change", updateSoundModeUI);
-soundModeUpload.addEventListener("change", updateSoundModeUI);
-soundModeBrowse.addEventListener("change", updateSoundModeUI);
+soundModeDefault?.addEventListener("change", updateSoundModeUI);
+soundModeUpload?.addEventListener("change", updateSoundModeUI);
+soundModeBrowse?.addEventListener("change", updateSoundModeUI);
 
 // ============================
 // 4) Browse sounds (Freesound)
 // ============================
-// Put your Freesound API token here later.
-// You need it to call the API. [web:212][web:215]
 const FREESOUND_TOKEN = window.APP_CONFIG?.FREESOUND_TOKEN || "";
-
 let selectedBrowseSound = null; // { name, previewUrl }
 
 function setStatus(msg) {
-  soundStatus.textContent = msg;
+  if (soundStatus) soundStatus.textContent = msg;
 }
 
 function clearBrowseResults() {
-  soundResults.innerHTML = "";
+  if (soundResults) soundResults.innerHTML = "";
 }
 
 function setPreview(url) {
-  // Load preview URL into the audio player
+  if (!soundPreviewPlayer) return;
   soundPreviewPlayer.src = url || "";
   if (!url) soundPreviewPlayer.removeAttribute("src");
   soundPreviewPlayer.load();
@@ -85,7 +142,7 @@ function setPreview(url) {
 
 async function searchFreesound(query) {
   if (!FREESOUND_TOKEN) {
-    setStatus("Add your Freesound API token in script.js to enable searching.");
+    setStatus("Add your Freesound API token in config.js to enable searching.");
     return [];
   }
 
@@ -100,11 +157,9 @@ async function searchFreesound(query) {
     });
 
   const response = await fetch(url, {
-    headers: {
-      Authorization: `Token ${FREESOUND_TOKEN}`
-    }
-  }); // fetch() returns a Promise for a Response [web:267]
-console.log(response)
+    headers: { Authorization: `Token ${FREESOUND_TOKEN}` }
+  });
+
   if (!response.ok) {
     setStatus(`Search failed (HTTP ${response.status}).`);
     return [];
@@ -112,7 +167,6 @@ console.log(response)
 
   const data = await response.json();
   const results = data.results || [];
-
   setStatus(results.length ? `Found ${results.length} sounds.` : "No results.");
   return results;
 }
@@ -128,7 +182,6 @@ function renderBrowseResults(results) {
     name.className = "sound-name";
     name.textContent = r.name || "Untitled";
 
-    // Freesound preview fields usually include multiple sizes; try common ones
     const previewUrl =
       (r.previews && (r.previews["preview-hq-mp3"] || r.previews["preview-lq-mp3"])) || null;
 
@@ -149,6 +202,7 @@ function renderBrowseResults(results) {
       selectedBrowseSound = { name: r.name, previewUrl };
       setStatus(`Selected sound: ${r.name}`);
       setPreview(previewUrl);
+      toast("Successfully added sound");
     });
 
     row.appendChild(name);
@@ -158,19 +212,83 @@ function renderBrowseResults(results) {
   });
 }
 
-soundSearchBtn.addEventListener("click", async () => {
-  const query = soundSearchInput.value.trim();
+soundSearchBtn?.addEventListener("click", async () => {
+  const query = (soundSearchInput?.value || "").trim();
   if (!query) {
     setStatus("Type a search term first (ex: alarm).");
     return;
   }
-
   const results = await searchFreesound(query);
   renderBrowseResults(results);
 });
 
 // ============================
-// 5) Timer creation + countdown
+// 5) Presets (star + sidebar)
+// ============================
+function renderPresets() {
+  if (!savedList) return; // Only works if your HTML has <div id="savedList"></div>
+  savedList.innerHTML = "";
+
+  if (!presets.length) {
+    const empty = document.createElement("p");
+    empty.textContent = "No saved timers yet.";
+    savedList.appendChild(empty);
+    return;
+  }
+
+  presets.forEach((p) => {
+    const row = document.createElement("div");
+    row.className = "saved-item";
+    row.title = "Click to load";
+
+    const label = document.createElement("div");
+    label.textContent = `${p.appName} (${p.totalSeconds}s)`;
+
+    const del = document.createElement("button");
+    del.type = "button";
+    del.textContent = "✕";
+
+    del.addEventListener("click", (e) => {
+      e.stopPropagation();
+      presets = presets.filter((x) => x.id !== p.id);
+      savePresets(presets);
+      renderPresets();
+      toast("Removed saved timer");
+    });
+
+    row.addEventListener("click", () => {
+      appNameInput.value = p.appName;
+
+      const h = Math.floor(p.totalSeconds / 3600);
+      const m = Math.floor((p.totalSeconds % 3600) / 60);
+      const s = p.totalSeconds % 60;
+
+      hoursInput.value = h;
+      minutesInput.value = m;
+      secondsInput.value = s;
+
+      if (p.soundType === "browse" && p.selectedBrowseSound?.previewUrl) {
+        soundModeBrowse.checked = true;
+        selectedBrowseSound = p.selectedBrowseSound;
+        setStatus(`Loaded saved sound: ${selectedBrowseSound.name}`);
+        setPreview(selectedBrowseSound.previewUrl);
+      } else {
+        soundModeDefault.checked = true;
+        selectedBrowseSound = null;
+      }
+
+      updateSoundModeUI();
+      toast("Loaded saved timer");
+    });
+
+    row.appendChild(label);
+    row.appendChild(del);
+    savedList.appendChild(row);
+  });
+}
+
+// ============================
+// 6) Timer creation + countdown
 // ============================
 function toInt(value) {
   const n = Number.parseInt(value, 10);
@@ -178,9 +296,9 @@ function toInt(value) {
 }
 
 function getTotalSeconds() {
-  const h = toInt(hoursInput.value);
-  const m = toInt(minutesInput.value);
-  const s = toInt(secondsInput.value);
+  const h = toInt(hoursInput?.value);
+  const m = toInt(minutesInput?.value);
+  const s = toInt(secondsInput?.value);
   return h * 3600 + m * 60 + s;
 }
 
@@ -193,60 +311,82 @@ function startCountdown(displayEl, seconds, onDone) {
     displayEl.textContent = `Remaining: ${remaining}s`;
 
     if (remaining <= 0) {
-      clearInterval(intervalId); // stop repeating interval [web:264][web:159]
+      clearInterval(intervalId);
       displayEl.textContent = "Done!";
       onDone?.();
     }
-  }, 1000); // run every 1000ms [web:159]
+  }, 1000);
 
   return intervalId;
 }
 
-timerForm.addEventListener("submit", (event) => {
-  event.preventDefault(); // stop normal form submission [web:137]
+timerForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
 
-  const appName = appNameInput.value.trim();
+  const appName = (appNameInput?.value || "").trim();
   const totalSeconds = getTotalSeconds();
   const mode = getSoundMode();
 
   if (!appName) return;
   if (totalSeconds <= 0) return;
 
-  // Decide what sound is attached to this timer (store label + how to play later)
+  // Decide sound attachment
   let soundLabel = "Default";
   let soundType = "default";
   let soundData = null;
 
   if (mode === "upload") {
-    const file = timerSoundInput.files && timerSoundInput.files[0];
+    const file = timerSoundInput?.files?.[0];
     if (file) {
       soundLabel = file.name;
       soundType = "upload";
-      soundData = file; // will convert to object URL later when playing
-    } else {
-      soundLabel = "Default";
-      soundType = "default";
+      soundData = file;
     }
   }
 
   if (mode === "browse") {
-    if (selectedBrowseSound && selectedBrowseSound.previewUrl) {
+    if (selectedBrowseSound?.previewUrl) {
       soundLabel = selectedBrowseSound.name;
       soundType = "browse";
-      soundData = selectedBrowseSound.previewUrl; // preview URL
-    } else {
-      soundLabel = "Default";
-      soundType = "default";
+      soundData = selectedBrowseSound.previewUrl;
     }
   }
 
-  // Build a timer card
+  // Card UI
   const card = document.createElement("div");
   card.className = "timer-card";
+
+  const headerRow = document.createElement("div");
+  headerRow.style.display = "flex";
+  headerRow.style.justifyContent = "space-between";
+  headerRow.style.alignItems = "center";
+  headerRow.style.gap = "10px";
 
   const title = document.createElement("div");
   title.className = "title";
   title.textContent = appName;
+
+  const star = document.createElement("span");
+  star.className = "star";
+  star.textContent = "☆";
+  star.title = "Save this timer";
+
+  star.addEventListener("click", () => {
+    const preset = {
+      id: Date.now(),
+      appName,
+      totalSeconds,
+      soundType,
+      selectedBrowseSound: soundType === "browse" ? selectedBrowseSound : null
+    };
+    presets.unshift(preset);
+    savePresets(presets);
+    renderPresets();
+    toast("Saved timer");
+  });
+
+  headerRow.appendChild(title);
+  headerRow.appendChild(star);
 
   const soundLine = document.createElement("div");
   soundLine.className = "sound";
@@ -255,43 +395,66 @@ timerForm.addEventListener("submit", (event) => {
   const time = document.createElement("div");
   time.className = "time";
 
-  card.appendChild(title);
+  const actions = document.createElement("div");
+  actions.className = "actions";
+  actions.style.display = "flex";
+  actions.style.gap = "10px";
+  actions.style.justifyContent = "flex-end";
+
+  const stopBtn = document.createElement("button");
+  stopBtn.type = "button";
+  stopBtn.textContent = "Stop";
+
+  card.appendChild(headerRow);
   card.appendChild(soundLine);
   card.appendChild(time);
+  card.appendChild(actions);
+  actions.appendChild(stopBtn);
 
   timersList.appendChild(card);
 
-  // Countdown (for now: just text; later you can trigger notification + sound)
-  startCountdown(time, totalSeconds, () => {
-  // Timer finished! Play sound now.
-  if (soundType === "default") {
-    // Play the default sound
-    notificationSound.play();
-  } else if (soundType === "upload" && soundData) {
-    // Play uploaded MP3
-    const url = URL.createObjectURL(soundData);
-    const audio = new Audio(url);
-    audio.play();
-  } else if (soundType === "browse" && soundData) {
-    // Play preview sound from Freesound
-    const audio = new Audio(soundData);
-    audio.play();
-  }
-});
+  // Countdown + stop support
+  let intervalId = null;
 
+  stopBtn.addEventListener("click", () => {
+    if (intervalId) clearInterval(intervalId);
+    stopAlarm();
+    time.textContent = "Stopped";
+  });
 
-  // Optional reset
+  intervalId = startCountdown(time, totalSeconds, () => {
+    notifyTimerDone(appName);
+    stopAlarm();
+
+    if (soundType === "default") {
+      currentAlarmAudio = notificationSound;
+      if (currentAlarmAudio) {
+        currentAlarmAudio.currentTime = 0;
+        currentAlarmAudio.play();
+      }
+    } else if (soundType === "upload" && soundData) {
+      const url = URL.createObjectURL(soundData);
+      currentAlarmAudio = new Audio(url);
+      currentAlarmAudio.play();
+    } else if (soundType === "browse" && soundData) {
+      currentAlarmAudio = new Audio(soundData);
+      currentAlarmAudio.play();
+    }
+  });
+
+  // Reset form
   timerForm.reset();
   hoursInput.value = 0;
   minutesInput.value = 0;
   secondsInput.value = 0;
 
-  // Keep browse selection (so user can add multiple timers with same browsed sound)
   updateSoundModeUI();
 });
 
 // ============================
-// 6) Init
+// 7) Init
 // ============================
 updateSoundModeUI();
 setStatus("Choose Browse to search and preview sounds.");
+updatePermissionUI();
+renderPresets();

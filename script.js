@@ -262,7 +262,7 @@ function renderPresets() {
     row.className = "saved-item";
 
     const label = document.createElement("div");
-    label.textContent = `${p.appName} (${p.totalSeconds}s)`;
+    label.textContent = `${p.appName} (${formatRemaining(p.totalSeconds, "clock")})`;
 
     const loadBtn = document.createElement("button");
     loadBtn.type = "button";
@@ -313,13 +313,41 @@ function getTotalSeconds() {
   return h * 3600 + m * 60 + s;
 }
 
+function formatRemaining(totalSeconds, style = "clock") {
+  const s = Math.max(0, Math.floor(totalSeconds));
+
+  const hours = Math.floor(s / 3600);
+  const minutes = Math.floor((s % 3600) / 60);
+  const seconds = s % 60;
+
+  if (style === "words") {
+    return `${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  // "clock" => HH:MM:SS (pads minutes/seconds; hours padded too for consistent look)
+  return (
+    String(hours).padStart(2, "0") +
+    ":" +
+    String(minutes).padStart(2, "0") +
+    ":" +
+    String(seconds).padStart(2, "0")
+  );
+}
+
 function startCountdown(displayEl, seconds, onDone) {
   let remaining = seconds;
-  displayEl.textContent = `Remaining: ${remaining}s`;
+
+  const render = () => {
+    // Choose one:
+    displayEl.textContent = `Remaining: ${formatRemaining(remaining, "clock")}`;
+    // displayEl.textContent = `Remaining: ${formatRemaining(remaining, "words")}`;
+  };
+
+  render();
 
   const intervalId = setInterval(() => {
     remaining -= 1;
-    displayEl.textContent = `Remaining: ${remaining}s`;
+    render();
 
     if (remaining <= 0) {
       clearInterval(intervalId);
@@ -330,6 +358,7 @@ function startCountdown(displayEl, seconds, onDone) {
 
   return intervalId;
 }
+
 
 timerForm?.addEventListener("submit", (event) => {
   event.preventDefault();

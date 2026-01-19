@@ -247,6 +247,9 @@ input[type="radio"]{
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  max-height: 220px;   /* adjust */
+  overflow-y: auto;
 }
 
 .sound-result{

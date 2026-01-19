@@ -12,13 +12,33 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
-body {
+body{
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
-  padding: 20px;
+  padding: 20px; /* keep your edge spacing */
   color: #333;
+
+  /* Rainbow background */
+  background: linear-gradient(
+    90deg,
+    #ff004c,
+    #ff7a00,
+    #ffe600,
+    #2bff00,
+    #00ffd5,
+    #0066ff,
+    #8a2be2,
+    #ff004c
+  );
+  background-size: 400% 400%;
+  animation: rainbowShift 10s ease infinite;
 }
+@keyframes rainbowShift{
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 
 /* ============================
    Container & Layout
@@ -34,6 +54,7 @@ body {
   box-shadow: none;    /* optional: remove floating card look */
   overflow: hidden;
 }
+
 
 /* ============================
    Sidebar layout

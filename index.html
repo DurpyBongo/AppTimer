@@ -14,131 +14,110 @@
       <h1>⏱️ App Timer Manager</h1>
     </header>
 
-    <section id="permissionSection">
-      <p>Enable notifications to get alerts when timers expire</p>
-      <button id="requestPermissionBtn" type="button">Enable Notifications</button>
-    </section>
+    <div class="layout">
+      <!-- LEFT SIDEBAR -->
+      <aside class="sidebar">
+        <h2>Saved Timers</h2>
+        <div id="savedList"></div>
+      </aside>
 
-    <section class="timer-form">
-      <h2>Add New Timer</h2>
-
-      <!-- IMPORTANT: only ONE form tag -->
-      <form id="timerForm">
-        <div class="form-group">
-          <label for="appName">App Name:</label>
-          <input
-            type="text"
-            id="appName"
-            name="appName"
-            placeholder="Enter app name"
-            required
-          />
-        </div>
-
-        <!-- Sound mode choice -->
-        <fieldset class="form-group" id="soundModeSection">
-          <legend>Sound</legend>
-
-          <label>
-            <input
-              type="radio"
-              name="soundMode"
-              id="soundModeDefault"
-              value="default"
-              checked
-            />
-            Use default sound
-          </label>
-
-          <label>
-            <input
-              type="radio"
-              name="soundMode"
-              id="soundModeUpload"
-              value="upload"
-            />
-            Upload MP3
-          </label>
-
-          <label>
-            <input
-              type="radio"
-              name="soundMode"
-              id="soundModeBrowse"
-              value="browse"
-            />
-            Browse sounds
-          </label>
-        </fieldset>
-
-        <!-- Upload sound (shown when Upload is selected) -->
-        <section id="uploadSoundSection" class="form-group">
-          <label for="timerSound">Timer sound (MP3):</label>
-          <input
-            type="file"
-            id="timerSound"
-            name="timerSound"
-            accept="audio/mpeg,audio/*,.mp3"
-          />
+      <!-- MAIN CONTENT -->
+      <main class="main">
+        <section id="permissionSection">
+          <p>Enable notifications to get alerts when timers expire</p>
+          <button id="requestPermissionBtn" type="button">Enable Notifications</button>
         </section>
 
-        <!-- Browse + preview (shown when Browse is selected) -->
-        <section id="browseSoundSection" class="form-group">
-          <label for="soundSearch">Search sounds:</label>
-          <input
-            type="text"
-            id="soundSearch"
-            name="soundSearch"
-            placeholder="Try: alarm, beep, bell"
-          />
+        <section class="timer-form">
+          <h2>Add New Timer</h2>
 
-          <button id="soundSearchBtn" type="button">Search</button>
+          <form id="timerForm">
+            <div class="form-group">
+              <label for="appName">App Name:</label>
+              <input
+                type="text"
+                id="appName"
+                name="appName"
+                placeholder="Enter app name"
+                required
+              />
+            </div>
 
-          <p id="soundStatus" aria-live="polite"></p>
+            <fieldset class="form-group" id="soundModeSection">
+              <legend>Sound</legend>
 
-          <audio id="soundPreviewPlayer" controls></audio>
+              <label>
+                <input type="radio" name="soundMode" id="soundModeDefault" value="default" checked />
+                Use default sound
+              </label>
 
-          <div id="soundResults"></div>
+              <label>
+                <input type="radio" name="soundMode" id="soundModeUpload" value="upload" />
+                Upload MP3
+              </label>
+
+              <label>
+                <input type="radio" name="soundMode" id="soundModeBrowse" value="browse" />
+                Browse sounds
+              </label>
+            </fieldset>
+
+            <section id="uploadSoundSection" class="form-group">
+              <label for="timerSound">Timer sound (MP3):</label>
+              <input type="file" id="timerSound" name="timerSound" accept="audio/mpeg,audio/*,.mp3" />
+            </section>
+
+            <section id="browseSoundSection" class="form-group">
+              <label for="soundSearch">Search sounds:</label>
+              <input
+                type="text"
+                id="soundSearch"
+                name="soundSearch"
+                placeholder="Try: alarm, beep, bell"
+              />
+
+              <button id="soundSearchBtn" type="button">Search</button>
+
+              <p id="soundStatus" aria-live="polite"></p>
+
+              <audio id="soundPreviewPlayer" controls></audio>
+
+              <div id="soundResults"></div>
+            </section>
+
+            <div class="time-inputs">
+              <div class="form-group">
+                <label for="hours">Hours:</label>
+                <input type="number" id="hours" name="hours" min="0" max="23" value="0" />
+              </div>
+
+              <div class="form-group">
+                <label for="minutes">Minutes:</label>
+                <input type="number" id="minutes" name="minutes" min="0" max="59" value="0" />
+              </div>
+
+              <div class="form-group">
+                <label for="seconds">Seconds:</label>
+                <input type="number" id="seconds" name="seconds" min="0" max="59" value="0" />
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary">Add Timer</button>
+          </form>
         </section>
 
-        <div class="time-inputs">
-          <div class="form-group">
-            <label for="hours">Hours:</label>
-            <input type="number" id="hours" name="hours" min="0" max="23" value="0" />
-          </div>
-
-          <div class="form-group">
-            <label for="minutes">Minutes:</label>
-            <input type="number" id="minutes" name="minutes" min="0" max="59" value="0" />
-          </div>
-
-          <div class="form-group">
-            <label for="seconds">Seconds:</label>
-            <input type="number" id="seconds" name="seconds" min="0" max="59" value="0" />
-          </div>
-        </div>
-
-        <button type="submit" class="btn-primary">Add Timer</button>
-      </form>
-    </section>
-
-    <section class="saved-timers">
-      <h2>Saved Timers</h2>
-      <div id="savedList"></div>
-    </section>
-
-    <section class="timers-container">
-      <h2>Active Timers</h2>
-      <div id="timersList"></div>
-    </section>
+        <section class="timers-container">
+          <h2>Active Timers</h2>
+          <div id="timersList"></div>
+        </section>
+      </main>
+    </div>
   </div>
 
-  <!-- Default/selected timer completion sound playback -->
   <audio id="notificationSound" preload="auto">
     <source src="DefaultYOnotification.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- Toast popup -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="config.js"></script>

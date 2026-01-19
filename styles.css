@@ -1,16 +1,9 @@
 /* ============================
    Global Styles & Reset
    ============================ */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-html {
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-}
+html { font-size: 14px; -webkit-font-smoothing: antialiased; } /* smaller base */
 
 body{
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -32,82 +25,59 @@ body{
   background-size: 400% 400%;
   animation: rainbowShift 10s ease infinite;
 
-  overflow: hidden; /* stops the page from scrolling */ /* [web:242] */
+  overflow: hidden; /* no page scroll */
 }
 
 @keyframes rainbowShift{
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-
 
 /* ============================
    Container & Layout
    ============================ */
 .container{
   width: 100%;
-  max-width: 1200px;      /* optional: keep your nice size */
-  margin: 0 auto;         /* centers it */
+  max-width: 1200px;
+  margin: 0 auto;
 
   height: calc(100vh - 40px); /* 20px top + 20px bottom */
   background: white;
-
   border-radius: 12px;
-  overflow: hidden;       /* keep inside scroll controlled */
+  overflow: hidden;
 }
 
-
-/* ============================
-   Sidebar layout
-   ============================ */
 .layout{
+  height: 100%;
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 220px 1fr; /* slightly smaller sidebar */
 }
 
 .sidebar{
   border-right: 1px solid #eee;
   background: #fff;
-  padding: 20px;
+  padding: 12px; /* smaller padding */
+  overflow: auto;
 }
 
 .main{
   background: #fff;
+  overflow: auto;
 }
 
-/* Saved timers list */
-#savedList{
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.saved-item{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px;
-  background: #f9f9f9;
-  border: 1px solid #eee;
-  border-radius: 8px;
-}
-
-.saved-item button{
-  padding: 6px 10px;
-  font-size: 0.85rem;
-}
-
-header {
+/* ============================
+   Header
+   ============================ */
+header{
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 30px 20px;
+  padding: 14px 14px; /* smaller */
   text-align: center;
 }
 
-header h1 {
-  font-size: 2rem;
+header h1{
+  font-size: 1.35rem; /* smaller title */
   font-weight: 700;
   margin: 0;
 }
@@ -115,18 +85,15 @@ header h1 {
 /* ============================
    Sections
    ============================ */
-section {
-  padding: 20px;
+section{
+  padding: 12px; /* smaller */
   border-bottom: 1px solid #eee;
 }
+section:last-child{ border-bottom: none; }
 
-section:last-child {
-  border-bottom: none;
-}
-
-section h2 {
-  font-size: 1.3rem;
-  margin-bottom: 15px;
+section h2{
+  font-size: 1.05rem; /* smaller */
+  margin-bottom: 10px;
   color: #333;
   font-weight: 600;
 }
@@ -134,50 +101,73 @@ section h2 {
 /* ============================
    Permission Section
    ============================ */
-#permissionSection {
+#permissionSection{
   background: #f0f4ff;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
+  gap: 10px;
 }
 
-#permissionSection p {
+#permissionSection p{
   margin: 0;
   color: #555;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+}
+
+/* ============================
+   Saved timers list
+   ============================ */
+#savedList{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.saved-item{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  background: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.saved-item button{
+  padding: 6px 8px;
+  font-size: 0.8rem;
 }
 
 /* ============================
    Form Styles
    ============================ */
-.form-group {
-  margin-bottom: 15px;
-}
+.form-group{ margin-bottom: 10px; }
 
-label {
+label{
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   font-weight: 500;
   color: #333;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 input[type="text"],
 input[type="number"],
 input[type="file"],
-audio {
+audio{
   width: 100%;
-  padding: 10px 12px;
+  padding: 8px 10px; /* smaller inputs */
   border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 input[type="text"]:focus,
 input[type="number"]:focus,
-input[type="file"]:focus {
+input[type="file"]:focus{
   outline: none;
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -186,34 +176,31 @@ input[type="file"]:focus {
 /* ============================
    Radio Buttons (Fieldset)
    ============================ */
-fieldset {
+fieldset{
   border: 1px solid #ddd;
   border-radius: 6px;
-  padding: 15px;
-  margin-bottom: 15px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
-fieldset legend {
+fieldset legend{
   padding: 0 8px;
   font-weight: 600;
   color: #333;
 }
 
-fieldset label {
+fieldset label{
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-weight: 400;
   margin-left: 0;
 }
+fieldset label:last-child{ margin-bottom: 0; }
 
-fieldset label:last-child {
-  margin-bottom: 0;
-}
-
-input[type="radio"] {
-  width: 18px;
-  height: 18px;
+input[type="radio"]{
+  width: 16px;
+  height: 16px;
   margin-right: 10px;
   cursor: pointer;
   accent-color: #667eea;
@@ -223,82 +210,80 @@ input[type="radio"] {
    Hidden Sections
    ============================ */
 #uploadSoundSection,
-#browseSoundSection {
+#browseSoundSection{
   display: none;
 }
 
 /* ============================
    Browse Sounds
    ============================ */
-#soundSearchBtn {
+#soundSearchBtn{
   width: auto;
-  padding: 8px 16px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  padding: 7px 12px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
-#soundStatus {
-  font-size: 0.9rem;
+#soundStatus{
+  font-size: 0.85rem;
   color: #667eea;
-  margin: 10px 0;
+  margin: 8px 0;
   font-weight: 500;
 }
 
-#soundPreviewPlayer {
+#soundPreviewPlayer{
   width: 100%;
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
-#soundResults {
+#soundResults{
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
-.sound-result {
+.sound-result{
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
+  gap: 8px;
+  padding: 8px;
   background: #f9f9f9;
   border-radius: 6px;
   border: 1px solid #eee;
 }
 
-.sound-name {
+.sound-name{
   flex: 1;
   font-weight: 500;
   color: #333;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   word-break: break-word;
 }
 
-.sound-result button {
-  padding: 6px 12px;
-  font-size: 0.85rem;
+.sound-result button{
+  padding: 6px 10px;
+  font-size: 0.8rem;
   white-space: nowrap;
 }
 
 /* ============================
-   Time Inputs (Horizontal)
+   Time Inputs
    ============================ */
-.time-inputs {
+.time-inputs{
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
-.time-inputs .form-group {
-  margin-bottom: 0;
-}
+.time-inputs .form-group{ margin-bottom: 0; }
 
-.time-inputs label {
+.time-inputs label{
   margin-bottom: 4px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
-.time-inputs input {
+.time-inputs input{
   text-align: center;
   font-weight: 600;
 }
@@ -306,68 +291,49 @@ input[type="radio"] {
 /* ============================
    Buttons
    ============================ */
-button {
-  padding: 10px 16px;
+button{
+  padding: 8px 12px; /* smaller */
   border: none;
   border-radius: 6px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.btn-primary {
+.btn-primary{
   width: 100%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  font-size: 1rem;
-  padding: 12px;
-  margin-top: 10px;
+  font-size: 0.95rem;
+  padding: 10px;
+  margin-top: 8px;
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-#requestPermissionBtn {
+#requestPermissionBtn{
   background: #667eea;
   color: white;
-  padding: 10px 16px;
+  padding: 8px 12px;
 }
+#requestPermissionBtn:hover{ background: #764ba2; }
 
-#requestPermissionBtn:hover {
-  background: #764ba2;
-}
-
-#soundSearchBtn {
+#soundSearchBtn{
   background: #667eea;
   color: white;
 }
+#soundSearchBtn:hover{ background: #764ba2; }
 
-#soundSearchBtn:hover {
-  background: #764ba2;
-}
-
-.sound-result button {
+.sound-result button{
   background: #f0f0f0;
   color: #333;
   border: 1px solid #ddd;
-  padding: 6px 12px;
-  font-size: 0.85rem;
 }
-
-.sound-result button:hover:not(:disabled) {
+.sound-result button:hover:not(:disabled){
   background: #667eea;
   color: white;
   border-color: #667eea;
 }
-
-.sound-result button:disabled {
+.sound-result button:disabled{
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -375,161 +341,119 @@ button {
 /* ============================
    Timers Container
    ============================ */
-.timers-container {
-  padding: 20px;
+.timers-container{
+  padding: 12px;
   background: #fafafa;
 }
 
-#timersList {
+#timersList{
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
-/* Empty state */
-#timersList:empty::after {
+#timersList:empty::after{
   content: "No active timers yet. Create one above!";
   text-align: center;
   color: #999;
-  padding: 20px;
+  padding: 12px;
   font-style: italic;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 /* ============================
    Timer Card
    ============================ */
-.timer-card {
+.timer-card{
   background: white;
   border: 2px solid #667eea;
   border-radius: 8px;
-  padding: 15px;
+  padding: 10px; /* smaller */
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+  gap: 6px;
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.12);
   animation: slideIn 0.3s ease-out;
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes slideIn{
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.timer-card .title {
-  font-size: 1.1rem;
+.timer-card .title{
+  font-size: 1rem;
   font-weight: 700;
   color: #333;
 }
 
-.timer-card .sound {
-  font-size: 0.85rem;
+.timer-card .sound{
+  font-size: 0.8rem;
   color: #667eea;
   font-weight: 500;
 }
 
-.timer-card .time {
-  font-size: 1.8rem;
+.timer-card .time{
+  font-size: 1.3rem; /* smaller */
   font-weight: 700;
   color: #764ba2;
   text-align: center;
-  padding: 10px 0;
+  padding: 6px 0;
   font-family: 'Courier New', monospace;
-}
-
-.timer-card .time.done {
-  color: #10b981;
-  animation: pulse 0.6s ease-in-out;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
 }
 
 /* ============================
    Responsive
    ============================ */
-@media (max-width: 600px) {
-    .layout{
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 700px){
+  body{ padding: 12px; }
+  .container{ height: calc(100vh - 24px); }
 
+  .layout{ grid-template-columns: 1fr; }
   .sidebar{
     border-right: none;
     border-bottom: 1px solid #eee;
   }
+}
+@media (max-width: 600px){
+  .time-inputs{ grid-template-columns: 1fr; }
 
-  .container {
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  header h1 {
-    font-size: 1.5rem;
-  }
-
-  section {
-    padding: 15px;
-  }
-
-  #permissionSection {
+  #permissionSection{
     flex-direction: column;
     align-items: stretch;
   }
 
-  #requestPermissionBtn {
-    width: 100%;
-  }
+  #requestPermissionBtn{ width: 100%; }
 
-  .time-inputs {
-    grid-template-columns: 1fr;
-  }
-
-  .sound-result {
+  .sound-result{
     flex-direction: column;
     align-items: stretch;
   }
-
-  .sound-result button {
-    width: 100%;
-  }
+  .sound-result button{ width: 100%; }
 }
 
 /* ============================
    Utility
    ============================ */
-audio {
-  outline: none;
-}
+audio{ outline: none; }
 
-p {
+p{
   margin: 0;
   color: #666;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .toast{
   position: fixed;
   left: 50%;
-  bottom: 22px;
+  bottom: 18px;
   transform: translateX(-50%);
   background: rgba(20,20,20,0.92);
   color: #fff;
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease;

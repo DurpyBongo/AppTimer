@@ -358,12 +358,10 @@ button{
 
   padding-bottom: 70px;         /* more room for Stop */
   scroll-padding-bottom: 60px;  /* helps keep last item visible */ /* [web:319] */
-  #timersList{ min-height: 0; }
+  
 }
 
-
-
-
+#timersList{ min-height: 0; }
 
 #timersList{
   display: flex;

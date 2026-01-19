@@ -23,7 +23,6 @@ function loadPresets() {
 function savePresets(list) {
   localStorage.setItem(PRESET_KEY, JSON.stringify(list));
 }
-
 let presets = loadPresets();
 
 // Notification helper
@@ -70,11 +69,9 @@ const soundPreviewPlayer = document.getElementById("soundPreviewPlayer");
 const soundResults = document.getElementById("soundResults");
 
 const timersList = document.getElementById("timersList");
-
-// Default notification sound <audio>
 const notificationSound = document.getElementById("notificationSound");
 
-// OPTIONAL: sidebar saved list container (only works if you add it to HTML)
+// Saved list (must exist in HTML)
 const savedList = document.getElementById("savedList");
 
 // ============================
@@ -86,8 +83,6 @@ function updatePermissionUI() {
     permissionSection.style.display = "none";
     return;
   }
-
-  // Hide section if already granted
   permissionSection.style.display =
     Notification.permission === "granted" ? "none" : "flex";
 }
@@ -95,7 +90,9 @@ function updatePermissionUI() {
 if (requestPermissionBtn) {
   requestPermissionBtn.addEventListener("click", async () => {
     if (!("Notification" in window)) return;
-    await Notification.requestPermission(); // should be user gesture [page:1]
+
+    // Best practice: request from a user gesture [page:1]
+    await Notification.requestPermission();
     updatePermissionUI();
   });
 }
@@ -223,46 +220,9 @@ soundSearchBtn?.addEventListener("click", async () => {
 });
 
 // ============================
-// 5) Presets (star + sidebar)
+// 5) Presets (Save + Load list)
 // ============================
-function renderPresets() {
-  if (!savedList) return; // Only works if your HTML has <div id="savedList"></div>
-  savedList.innerHTML = "";
-
-  if (!presets.length) {
-    const empty = document.createElement("p");
-    empty.textContent = "No saved timers yet.";
-    savedList.appendChild(empty);
-    return;
-  }
-
-  presets.forEach((p) => {
-    const row = document.createElement("div");
-    row.className = "saved-item";
-    row.title = "Click to load";
-
-    const label = document.createElement("div");
-    label.textContent = `${p.appName} (${p.totalSeconds}s)`;
-
-    const del = document.createElement("button");
-    del.type = "button";
-    del.textContent = "✕";
-
-    del.addEventListener("click", (e) => {
-      e.stopPropagation();
-      presets = presets.filter((x) => x.id !== p.id);
-      savePresets(presets);
-      renderPresets();
-      toast("Removed saved timer");
-    });
-
-    const loadBtn = document.createElement("button");
-loadBtn.type = "button";
-loadBtn.textContent = "Load";
-
-loadBtn.addEventListener("click", (e) => {
-  e.stopPropagation(); // keeps things clean [web:145]
-
+function loadPresetIntoForm(p) {
   appNameInput.value = p.appName;
 
   const h = Math.floor(p.totalSeconds / 3600);
@@ -284,12 +244,55 @@ loadBtn.addEventListener("click", (e) => {
   }
 
   updateSoundModeUI();
-  toast("Loaded saved timer");
-});
+}
 
-row.appendChild(loadBtn);
+function renderPresets() {
+  if (!savedList) return;
+  savedList.innerHTML = "";
 
+  if (!presets.length) {
+    const empty = document.createElement("p");
+    empty.textContent = "No saved timers yet.";
+    savedList.appendChild(empty);
+    return;
+  }
+
+  presets.forEach((p) => {
+    const row = document.createElement("div");
+    row.className = "saved-item";
+
+    const label = document.createElement("div");
+    label.textContent = `${p.appName} (${p.totalSeconds}s)`;
+
+    const loadBtn = document.createElement("button");
+    loadBtn.type = "button";
+    loadBtn.textContent = "Load";
+    loadBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      loadPresetIntoForm(p);
+      toast("Loaded saved timer");
+    });
+
+    const del = document.createElement("button");
+    del.type = "button";
+    del.textContent = "✕";
+    del.addEventListener("click", (e) => {
+      e.stopPropagation();
+      presets = presets.filter((x) => x.id !== p.id);
+      savePresets(presets);
+      renderPresets();
+      toast("Removed saved timer");
+    });
+
+    // Optional: row click loads too
+    row.addEventListener("click", () => {
+      loadPresetIntoForm(p);
+      toast("Loaded saved timer");
+    });
+
+    // IMPORTANT: append everything into row, then row into savedList
     row.appendChild(label);
+    row.appendChild(loadBtn);
     row.appendChild(del);
     savedList.appendChild(row);
   });
@@ -360,7 +363,6 @@ timerForm?.addEventListener("submit", (event) => {
     }
   }
 
-  // Card UI
   const card = document.createElement("div");
   card.className = "timer-card";
 
@@ -378,6 +380,7 @@ timerForm?.addEventListener("submit", (event) => {
   star.className = "star";
   star.textContent = "☆";
   star.title = "Save this timer";
+  star.style.cursor = "pointer";
 
   star.addEventListener("click", () => {
     const preset = {
@@ -387,6 +390,7 @@ timerForm?.addEventListener("submit", (event) => {
       soundType,
       selectedBrowseSound: soundType === "browse" ? selectedBrowseSound : null
     };
+
     presets.unshift(preset);
     savePresets(presets);
     renderPresets();
@@ -421,13 +425,12 @@ timerForm?.addEventListener("submit", (event) => {
 
   timersList.appendChild(card);
 
-  // Countdown + stop support
   let intervalId = null;
 
   stopBtn.addEventListener("click", () => {
     if (intervalId) clearInterval(intervalId);
     stopAlarm();
-    time.textContent = "Stopped";
+    card.remove(); // remove from Active Timers
   });
 
   intervalId = startCountdown(time, totalSeconds, () => {
@@ -448,6 +451,9 @@ timerForm?.addEventListener("submit", (event) => {
       currentAlarmAudio = new Audio(soundData);
       currentAlarmAudio.play();
     }
+
+    // remove after short delay so user sees Done!
+    setTimeout(() => card.remove(), 800);
   });
 
   // Reset form

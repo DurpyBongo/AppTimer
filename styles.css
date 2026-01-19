@@ -50,9 +50,11 @@ body{
 
 .layout{
   height: 100%;
+  min-height: 0;              /* ADD THIS */
   display: grid;
-  grid-template-columns: 220px 1fr; /* slightly smaller sidebar */
+  grid-template-columns: 220px 1fr;
 }
+
 
 .sidebar{
   border-right: 1px solid #eee;
@@ -63,8 +65,13 @@ body{
 
 .main{
   background: #fff;
-  overflow: auto;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;    /* main does NOT scroll */
 }
+
 
 /* ============================
    Header
@@ -342,17 +349,21 @@ button{
    Timers Container
    ============================ */
 .timers-container{
-  padding: 12px;
   background: #fafafa;
+  padding: 12px;
+
+  flex: 1;             /* this is the scroll area */
+  min-height: 0;       /* crucial for flex overflow */
+  overflow-y: auto;    /* scroll happens here */ /* [web:241] */
+
+  padding-bottom: 70px;         /* more room for Stop */
+  scroll-padding-bottom: 60px;  /* helps keep last item visible */ /* [web:319] */
+  #timersList{ min-height: 0; }
 }
 
-.main{
-  min-height: 0;      /* IMPORTANT: lets the scroll area reach the bottom */
-}
 
-.timers-container{
-  padding-bottom: 24px; /* so the Stop button isn't cut off */
-}
+
+
 
 #timersList{
   display: flex;

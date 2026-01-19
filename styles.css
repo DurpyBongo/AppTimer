@@ -346,6 +346,14 @@ button{
   background: #fafafa;
 }
 
+.main{
+  min-height: 0;      /* IMPORTANT: lets the scroll area reach the bottom */
+}
+
+.timers-container{
+  padding-bottom: 24px; /* so the Stop button isn't cut off */
+}
+
 #timersList{
   display: flex;
   flex-direction: column;

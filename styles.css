@@ -42,11 +42,14 @@ body{
   max-width: 1200px;
   margin: 0 auto;
 
-  height: calc(100vh - 40px); /* 20px top + 20px bottom */
+  height: calc(100vh - 40px);
   background: white;
   border-radius: 12px;
-  overflow: hidden;
+
+  overflow-y: auto;   /* <-- change from hidden */
+  overflow-x: hidden;
 }
+
 
 .layout{
   height: 100%;
@@ -69,8 +72,9 @@ body{
   min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;    /* main does NOT scroll */
+  overflow: visible; /* or just remove the overflow line */
 }
+
 
 
 /* ============================
@@ -355,14 +359,11 @@ button{
   background: #fafafa;
   padding: 12px;
 
-  flex: 1;             /* this is the scroll area */
-  min-height: 0;       /* crucial for flex overflow */
-  overflow-y: auto;    /* scroll happens here */ /* [web:241] */
-
-  padding-bottom: 70px;         /* more room for Stop */
-  scroll-padding-bottom: 70px;  /* helps keep last item visible */ /* [web:319] */
-  
+  flex: initial;        /* or remove flex: 1 */
+  min-height: auto;
+  overflow: visible;    /* remove overflow-y: auto */
 }
+
 
 #timersList{ min-height: 0; }
 

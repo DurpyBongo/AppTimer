@@ -32,6 +32,47 @@ body {
   overflow: hidden;
 }
 
+/* ============================
+   Sidebar layout
+   ============================ */
+.layout{
+  display: grid;
+  grid-template-columns: 240px 1fr;
+}
+
+.sidebar{
+  border-right: 1px solid #eee;
+  background: #fff;
+  padding: 20px;
+}
+
+.main{
+  background: #fff;
+}
+
+/* Saved timers list */
+#savedList{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.saved-item{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.saved-item button{
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
+
 header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -394,6 +435,15 @@ button {
    Responsive
    ============================ */
 @media (max-width: 600px) {
+    .layout{
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar{
+    border-right: none;
+    border-bottom: 1px solid #eee;
+  }
+
   .container {
     border-radius: 0;
     box-shadow: none;

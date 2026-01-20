@@ -877,17 +877,18 @@ if (canvas) {
 
   let mouse = { x: null, y: null };
 
-  canvas.addEventListener('mousemove', (e) => {
-  mouse.x = e.x;
-  mouse.y = e.y;
+  document.addEventListener('mousemove', (e) => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
   
-  for (let i = 0; i < 5; i++) {  // CREATE MORE particles (was 3)
+  for (let i = 0; i < 5; i++) {
     particles.push(new Particle(mouse.x, mouse.y));
   }
   
   hue += 2;
   if (hue > 360) hue = 0;
 });
+
 
 
   function animate() {

@@ -560,3 +560,35 @@ updateSoundModeUI();
 setStatus("Choose Browse to search and preview sounds.");
 updatePermissionUI();
 renderPresets();
+
+// ============================
+// 8) Hamburger Menu
+// ============================
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const slideMenu = document.getElementById('slideMenu');
+const closeBtn = document.getElementById('closeBtn');
+const menuOverlay = document.getElementById('menuOverlay');
+
+function openMenu() {
+  slideMenu.classList.add('active');
+  menuOverlay.classList.add('active');
+  hamburgerBtn.classList.add('active');
+  document.body.classList.add('menu-open');
+}
+
+function closeMenu() {
+  slideMenu.classList.remove('active');
+  menuOverlay.classList.remove('active');
+  hamburgerBtn.classList.remove('active');
+  document.body.classList.remove('menu-open');
+}
+
+hamburgerBtn?.addEventListener('click', openMenu);
+closeBtn?.addEventListener('click', closeMenu);
+menuOverlay?.addEventListener('click', closeMenu);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && slideMenu?.classList.contains('active')) {
+    closeMenu();
+  }
+});

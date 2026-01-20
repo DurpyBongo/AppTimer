@@ -130,13 +130,22 @@
         </div>
         
         <div class="setting-item">
-          <h3>Default Sound</h3>
-          <p>Choose your default timer sound</p>
-          <select style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
-            <option>Default Notification</option>
-            <option>Custom Upload</option>
-          </select>
-        </div>
+  <h3>Default Sound</h3>
+  <p>Choose your default timer sound</p>
+  <select id="defaultSoundMode" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 10px;">
+    <option value="default">Default Notification</option>
+    <option value="upload">Custom Upload</option>
+  </select>
+  
+  <div id="defaultSoundUpload" style="display: none; margin-top: 10px;">
+    <input type="file" id="defaultSoundFile" accept="audio/mpeg,audio/*,.mp3" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
+    <button id="saveDefaultSound" style="margin-top: 10px; background: #667eea; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer;">
+      Save Default Sound
+    </button>
+    <p id="currentDefaultSound" style="margin-top: 10px; font-size: 0.85rem; color: #667eea;"></p>
+  </div>
+</div>
+
         
         <div class="setting-item">
           <h3>Theme</h3>

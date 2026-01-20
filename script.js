@@ -400,18 +400,25 @@ timerForm?.addEventListener("submit", (event) => {
   if (totalSeconds <= 0) return;
 
   // Decide sound attachment
-  let soundLabel = "Default";
-  let soundType = "default";
-  let soundData = null;
+let soundLabel = "Default";
+let soundType = "default";
+let soundData = null;
 
-  if (mode === "upload") {
-    const file = timerSoundInput?.files?.[0];
-    if (file) {
-      soundLabel = file.name;
-      soundType = "upload";
-      soundData = file;
-    }
+// Check if user selected a custom sound for this timer
+if (mode === "upload") {
+  const file = timerSoundInput?.files?.[0];
+  if (file) {
+    soundLabel = file.name;
+    soundType = "upload";
+    soundData = file;
   }
+} else if (mode === "default" && defaultSound && defaultSound.type === "upload") {
+  // Use saved default sound if available
+  soundLabel = defaultSound.name;
+  soundType = "defaultUpload";
+  soundData = defaultSound.data;
+}
+
 
   if (mode === "browse") {
     if (selectedBrowseSound?.previewUrl) {
@@ -495,13 +502,18 @@ const timerControls = startCountdown(time, totalSeconds, () => {
     notifyTimerDone(appName);
     stopAlarm();
 
-    if (soundType === "default") {
+if (soundType === "default") {
   currentAlarmAudio = notificationSound;
   if (currentAlarmAudio) {
     currentAlarmAudio.currentTime = 0;
     currentAlarmAudio.play();
   }
+} else if (soundType === "defaultUpload" && soundData) {
+  // Play saved default sound (base64 data)
+  currentAlarmAudio = new Audio(soundData);
+  currentAlarmAudio.play();
 } else if (soundType === "upload" && soundData) {
+
   const url = URL.createObjectURL(soundData);
   currentAlarmAudio = new Audio(url);
   currentAlarmAudio.addEventListener(
@@ -660,3 +672,79 @@ if (clearAllPresetsBtn) {
     }
   });
 }
+
+// ============================
+// 10) Default Sound Settings
+// ============================
+const DEFAULT_SOUND_KEY = "app_timer_default_sound_v1";
+let defaultSound = null;
+
+// Load saved default sound
+function loadDefaultSound() {
+  try {
+    const saved = localStorage.getItem(DEFAULT_SOUND_KEY);
+    if (saved) {
+      defaultSound = JSON.parse(saved);
+      updateDefaultSoundDisplay();
+    }
+  } catch (e) {
+    console.error('Error loading default sound:', e);
+  }
+}
+
+// Save default sound
+function saveDefaultSound(soundData) {
+  try {
+    localStorage.setItem(DEFAULT_SOUND_KEY, JSON.stringify(soundData));
+    defaultSound = soundData;
+    updateDefaultSoundDisplay();
+    toast('Default sound saved!');
+  } catch (e) {
+    console.error('Error saving default sound:', e);
+    toast('Error saving sound');
+  }
+}
+
+// Update display
+function updateDefaultSoundDisplay() {
+  const display = document.getElementById('currentDefaultSound');
+  if (display && defaultSound) {
+    display.textContent = `Current: ${defaultSound.name}`;
+  }
+}
+
+// Settings UI handling
+const defaultSoundModeSelect = document.getElementById('defaultSoundMode');
+const defaultSoundUploadDiv = document.getElementById('defaultSoundUpload');
+const defaultSoundFileInput = document.getElementById('defaultSoundFile');
+const saveDefaultSoundBtn = document.getElementById('saveDefaultSound');
+
+if (defaultSoundModeSelect) {
+  defaultSoundModeSelect.addEventListener('change', (e) => {
+    if (defaultSoundUploadDiv) {
+      defaultSoundUploadDiv.style.display = e.target.value === 'upload' ? 'block' : 'none';
+    }
+  });
+}
+
+if (saveDefaultSoundBtn && defaultSoundFileInput) {
+  saveDefaultSoundBtn.addEventListener('click', () => {
+    const file = defaultSoundFileInput.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        saveDefaultSound({
+          name: file.name,
+          data: e.target.result,
+          type: 'upload'
+        });
+      };
+      reader.readAsDataURL(file);
+    } else {
+      toast('Please select a file first');
+    }
+  });
+}
+
+// Initialize
+loadDefaultSound();

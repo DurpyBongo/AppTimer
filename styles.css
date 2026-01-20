@@ -651,16 +651,32 @@ body.menu-open {
   position: relative;
 }
 
-/* Hover Effect - Move up and underline */
+/* Create custom underline that appears on hover */
+.menu-link::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #764ba2;
+  transition: width 0.3s ease;
+}
+
 .menu-link:hover {
   transform: translateY(-3px);
   color: #764ba2;
-  text-decoration: underline;
+  text-decoration: none; /* Remove default underline */
+}
+
+.menu-link:hover::after {
+  width: 100%; /* Underline grows from left */
 }
 
 .menu-link:active {
   transform: translateY(-1px);
 }
+
 
 /* Settings Page Styles */
 .settings-page {

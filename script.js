@@ -730,21 +730,35 @@ if (defaultSoundModeSelect) {
 if (saveDefaultSoundBtn && defaultSoundFileInput) {
   saveDefaultSoundBtn.addEventListener('click', () => {
     const file = defaultSoundFileInput.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
+    if (!file) {
+      toast('Please select a file first');
+      return;
+    }
+    
+    // Check file size (limit to 2MB for localStorage)
+    const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+    if (file.size > maxSize) {
+      toast('File too large! Please use a file under 2MB');
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
         saveDefaultSound({
           name: file.name,
           data: e.target.result,
           type: 'upload'
         });
-      };
-      reader.readAsDataURL(file);
-    } else {
-      toast('Please select a file first');
-    }
+      } catch (err) {
+        console.error('Save error:', err);
+        toast('File too large for storage. Try a smaller file.');
+      }
+    };
+    reader.readAsDataURL(file);
   });
 }
+
 
 // Initialize
 loadDefaultSound();

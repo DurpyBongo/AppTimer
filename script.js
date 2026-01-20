@@ -48,8 +48,15 @@ function stopAlarm() {
   if (!currentAlarmAudio) return;
   currentAlarmAudio.pause();
   currentAlarmAudio.currentTime = 0;
+  
+  // Call cleanup if it exists
+  if (currentAlarmAudio.cleanup) {
+    currentAlarmAudio.cleanup();
+  }
+  
   currentAlarmAudio = null;
 }
+
 
 
 // ============================
@@ -523,19 +530,19 @@ if (soundType === "default") {
   currentAlarmAudio = new Audio(soundData);
   currentAlarmAudio.play();
 } else if (soundType === "upload" && soundData) {
-
   const url = URL.createObjectURL(soundData);
   currentAlarmAudio = new Audio(url);
-  currentAlarmAudio.addEventListener(
-    "ended",
-    () => URL.revokeObjectURL(url),
-    { once: true }
-  );
-  currentAlarmAudio.play();
-} else if (soundType === "browse" && soundData) {
-  currentAlarmAudio = new Audio(soundData);
+  
+  // Revoke on BOTH ended AND when stopped
+  const cleanup = () => URL.revokeObjectURL(url);
+  currentAlarmAudio.addEventListener("ended", cleanup, { once: true });
+  
+  // Store cleanup function to call in stopAlarm()
+  currentAlarmAudio.cleanup = cleanup;
+  
   currentAlarmAudio.play();
 }
+
 
 
 
@@ -746,9 +753,9 @@ if (saveDefaultSoundBtn && defaultSoundFileInput) {
     }
     
     // Check file size (limit to 2MB for localStorage)
-    const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+    const maxSize = 1.5 * 1024 * 1024; // 1.5MB max to stay under 2MB when encoded
     if (file.size > maxSize) {
-      toast('File too large! Please use a file under 2MB');
+      toast('File too large! Please use a file under 1.5MB');
       return;
     }
     
@@ -819,3 +826,4 @@ if (saveNotificationMsgBtn && customNotificationMsgInput) {
 
 // Initialize (add to existing initialization)
 loadNotificationMsg();
+

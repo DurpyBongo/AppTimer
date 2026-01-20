@@ -72,7 +72,6 @@ body{
   min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: visible; /* or just remove the overflow line */
 }
 
 
@@ -712,4 +711,19 @@ body.menu-open {
   color: #666;
   margin-bottom: 10px;
 }
+
+
+/* ============================
+   WebGL Fluid Simulation
+   ============================ */
+#fluidCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+
 

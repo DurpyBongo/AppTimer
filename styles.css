@@ -487,7 +487,7 @@ p{
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 1001;
+  z-index: 10000;
   background: white;
   border: none;
   width: 50px;
@@ -536,7 +536,7 @@ p{
   max-width: 90vw;
   height: 100vh;
   background: white;
-  z-index: 1000;
+  z-index: 10001;
   overflow-y: auto;
   transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
@@ -564,7 +564,7 @@ p{
   transition: all 0.2s ease;
   font-weight: bold;
   line-height: 1;
-  z-index: 1002;  /* ADD THIS - Higher than hamburger button */
+  z-index: 10002;  /* ADD THIS - Higher than hamburger button */
 }
 
 .close-btn:hover {
@@ -592,7 +592,7 @@ p{
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 998;  /* CHANGED from 999 to 998 */
+  z-index: 9998;  /* CHANGED from 999 to 998 */
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;

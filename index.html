@@ -123,9 +123,21 @@
     <source src="DefaultYOnotification.mp3" type="audio/mpeg" />
   </audio>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <div class="slide-menu" id="slideMenu">
+    <button class="close-btn" id="closeBtn" aria-label="Close menu">×</button>
+    
+    <div class="slide-menu-content">
+      <h2>Menu</h2>
+      <p>Welcome to App Timer Manager!</p>
+    </div>
+  </div>
+
+  <div class="menu-overlay" id="menuOverlay"></div>
 
   <script src="config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
+

@@ -11,7 +11,11 @@
 <body>
   <canvas id="fluidCanvas"></canvas>
   
+  <!-- Required by Pavel's script -->
+  <a href="https://github.com/PavelDoGreat/WebGL-Fluid-Simulation" target="_blank" style="position: absolute; bottom: 10px; left: 10px; color: white; font-size: 12px; z-index: 99999;">WebGL Fluid</a>
+  
   <div class="container">
+
     <header>
       <h1>⏱️ App Timer Manager</h1>
       <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
@@ -212,11 +216,17 @@
 
 
   <div class="menu-overlay" id="menuOverlay"></div>
+
+<!-- Pavel's Fluid Simulation (MUST BE IN THIS ORDER) -->
+<script src="dat.gui.min.js"></script>
 <script src="fluid-background.js"></script>
+
+<!-- Your Scripts -->
 <script src="config.js"></script>
 <script src="script.js"></script>
 
 </body>
+
 
 </html>
 

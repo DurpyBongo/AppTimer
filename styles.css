@@ -707,7 +707,7 @@ body.menu-open {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 9998;  /* ← HIGH z-index puts it on top */
+  z-index: 2;  /* ← HIGH z-index puts it on top */
   pointer-events: none;  /* ← Clicks pass through to UI below */
 }
 

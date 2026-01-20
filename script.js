@@ -25,8 +25,6 @@ function savePresets(list) {
 }
 let presets = loadPresets();
 
-let presets = loadPresets();
-
 // Custom notification message (loaded later)
 let customNotificationMsg = "";
 
@@ -44,21 +42,6 @@ function notifyTimerDone(appName) {
   }
 }
 
-// Notification helper
-function notifyTimerDone(appName) {
-  if (!("Notification" in window)) return;
-  if (Notification.permission === "granted") {
-    // Use custom message if set, otherwise default
-    let message = customNotificationMsg || `${appName} finished.`;
-    
-    // Replace {app} placeholder with actual app name
-    message = message.replace(/{app}/g, appName);
-    
-    new Notification("Timer done", { body: message });
-  }
-}
-
-
 // Alarm audio helper
 let currentAlarmAudio = null;
 function stopAlarm() {
@@ -67,6 +50,7 @@ function stopAlarm() {
   currentAlarmAudio.currentTime = 0;
   currentAlarmAudio = null;
 }
+
 
 // ============================
 // 1) Grab DOM elements

@@ -272,7 +272,7 @@ function renderPresets() {
       loadPresetIntoForm(p);
       toast("Loaded saved timer");
     });
-
+    
     const del = document.createElement("button");
     del.type = "button";
     del.textContent = "✕";
@@ -334,30 +334,32 @@ function formatRemaining(totalSeconds, style = "clock") {
   );
 }
 
-function startCountdown(displayEl, seconds, onDone) {
-  let remaining = seconds;
+function startCountdown(displayEl, totalSeconds, onDone) {
+  const endTime = Date.now() + totalSeconds * 1000;
 
   const render = () => {
-    // Choose one:
-    displayEl.textContent = `Remaining: ${formatRemaining(remaining, "clock")}`;
-    // displayEl.textContent = `Remaining: ${formatRemaining(remaining, "words")}`;
-  };
+    const remainingMs = endTime - Date.now();
+    const remainingSec = Math.max(0, Math.ceil(remainingMs / 1000));
+    displayEl.textContent = `Remaining: ${formatRemaining(remainingSec, "clock")}`;
 
-  render();
-
-  const intervalId = setInterval(() => {
-    remaining -= 1;
-    render();
-
-    if (remaining <= 0) {
-      clearInterval(intervalId);
+    if (remainingSec <= 0) {
       displayEl.textContent = "Done!";
       onDone?.();
+      return true; // done
     }
+    return false;
+  };
+
+  // Render immediately
+  if (render()) return null;
+
+  const intervalId = setInterval(() => {
+    if (render()) clearInterval(intervalId);
   }, 1000);
 
   return intervalId;
 }
+
 
 
 timerForm?.addEventListener("submit", (event) => {

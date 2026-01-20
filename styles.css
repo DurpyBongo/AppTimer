@@ -11,28 +11,12 @@ body{
   padding: 20px;
   color: #333;
 
-  background: linear-gradient(
-    90deg,
-    #ff004c,
-    #ff7a00,
-    #ffe600,
-    #2bff00,
-    #00ffd5,
-    #0066ff,
-    #8a2be2,
-    #ff004c
-  );
-  background-size: 400% 400%;
-  animation: rainbowShift 10s ease infinite;
+  background: #0a0a0a;  /* Simple dark background so particles show */
 
-  overflow: hidden; /* no page scroll */
+  overflow: hidden;
 }
 
-@keyframes rainbowShift{
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+
 
 /* ============================
    Container & Layout
@@ -43,8 +27,8 @@ body{
   margin: 0 auto;
 
   height: calc(100vh - 40px);
-  background: white;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.85);  /* Semi-transparent white */
+  backdrop-filter: blur(10px);  /* Adds blur effect */  border-radius: 12px;
 
   overflow-y: auto;   /* <-- change from hidden */
   overflow-x: hidden;
@@ -61,17 +45,18 @@ body{
 
 .sidebar{
   border-right: 1px solid #eee;
-  background: #fff;
-  padding: 12px; /* smaller padding */
+  background: transparent;  /* Change from #fff */
+  padding: 12px;
   overflow: auto;
 }
 
 .main{
-  background: #fff;
+  background: transparent;  /* Change from #fff */
   height: 100%;
   min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow: visible;
 }
 
 

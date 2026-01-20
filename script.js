@@ -842,45 +842,53 @@ if (canvas) {
   let hue = 0;
 
   class Particle {
-    constructor(x, y) {
-      this.x = x;
-      this.y = y;
-      this.size = Math.random() * 15 + 5;
-      this.speedX = Math.random() * 3 - 1.5;
-      this.speedY = Math.random() * 3 - 1.5;
-      this.color = `hsl(${hue}, 100%, 50%)`;
-      this.life = 100;
-    }
-
-    update() {
-      this.x += this.speedX;
-      this.y += this.speedY;
-      this.life -= 1;
-      if (this.size > 0.3) this.size -= 0.1;
-    }
-
-    draw() {
-      ctx.fillStyle = this.color;
-      ctx.globalAlpha = this.life / 100;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
-    }
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = Math.random() * 25 + 10;  // BIGGER particles
+    this.speedX = Math.random() * 4 - 2;
+    this.speedY = Math.random() * 4 - 2;
+    this.color = `hsl(${hue}, 100%, 60%)`;  // BRIGHTER colors
+    this.life = 150;  // Live LONGER
   }
+
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    this.life -= 1;
+    if (this.size > 0.5) this.size -= 0.15;
+  }
+
+  draw() {
+    ctx.fillStyle = this.color;
+    ctx.globalAlpha = this.life / 150;  // Fade slower
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Add glow effect
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = this.color;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
 
   let mouse = { x: null, y: null };
 
   canvas.addEventListener('mousemove', (e) => {
-    mouse.x = e.x;
-    mouse.y = e.y;
-    
-    for (let i = 0; i < 3; i++) {
-      particles.push(new Particle(mouse.x, mouse.y));
-    }
-    
-    hue += 2;
-    if (hue > 360) hue = 0;
-  });
+  mouse.x = e.x;
+  mouse.y = e.y;
+  
+  for (let i = 0; i < 5; i++) {  // CREATE MORE particles (was 3)
+    particles.push(new Particle(mouse.x, mouse.y));
+  }
+  
+  hue += 2;
+  if (hue > 360) hue = 0;
+});
+
 
   function animate() {
     ctx.globalAlpha = 0.05;

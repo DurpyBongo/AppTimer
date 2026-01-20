@@ -838,78 +838,123 @@ if (canvas) {
   canvas.height = window.innerHeight;
 
   const particles = [];
-  const particleCount = 200;
+  const particleCount = 300;
   let hue = 0;
+  let mouse = { x: null, y: null, prevX: null, prevY: null };
 
   class Particle {
     constructor(x, y) {
       this.x = x;
       this.y = y;
-      this.size = Math.random() * 3 + 1;  // Smaller particles
-      this.speedX = (Math.random() - 0.5) * 3;
-      this.speedY = (Math.random() - 0.5) * 3;
-      this.color = `hsla(${hue}, 100%, 60%, 0.6)`;  // Semi-transparent
-      this.life = 60;  // Dissipate faster
-      this.initialLife = 60;
+      this.vx = (Math.random() - 0.5) * 2;
+      this.vy = (Math.random() - 0.5) * 2;
+      this.size = Math.random() * 4 + 2;
+      this.life = 100;
+      this.maxLife = 100;
+      this.hue = hue;
     }
 
     update() {
-      // Add gravity and drag for fluid motion
-      this.speedY += 0.1;  // Gravity
-      this.speedX *= 0.95;  // Drag
-      this.speedY *= 0.95;
-      
-      this.x += this.speedX;
-      this.y += this.speedY;
-      this.life -= 1;
-      if (this.size > 0.2) this.size -= 0.05;
+      // Add mouse interaction force
+      if (mouse.x !== null && mouse.y !== null) {
+        const dx = this.x - mouse.x;
+        const dy = this.y - mouse.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const maxDistance = 100;
+
+        if (distance < maxDistance) {
+          const force = (maxDistance - distance) / maxDistance;
+          const angle = Math.atan2(dy, dx);
+          
+          // Push away from cursor
+          this.vx += Math.cos(angle) * force * 0.5;
+          this.vy += Math.sin(angle) * force * 0.5;
+        }
+      }
+
+      // Apply velocity
+      this.x += this.vx;
+      this.y += this.vy;
+
+      // Friction
+      this.vx *= 0.98;
+      this.vy *= 0.98;
+
+      // Gravity
+      this.vy += 0.05;
+
+      // Fade out
+      this.life -= 0.5;
     }
 
     draw() {
-      const alpha = this.life / this.initialLife;
-      ctx.fillStyle = `hsla(${hue}, 100%, 60%, ${alpha * 0.4})`;  // Very transparent
+      const alpha = (this.life / this.maxLife) * 0.6;
+      const gradient = ctx.createRadialGradient(
+        this.x, this.y, 0,
+        this.x, this.y, this.size
+      );
+      gradient.addColorStop(0, `hsla(${this.hue}, 100%, 60%, ${alpha})`);
+      gradient.addColorStop(1, `hsla(${this.hue}, 100%, 60%, 0)`);
+      
+      ctx.fillStyle = gradient;
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
       ctx.fill();
-      
-      // Subtle glow
-      ctx.shadowBlur = 5;
-      ctx.shadowColor = this.color;
-      ctx.fill();
-      ctx.shadowBlur = 0;
     }
   }
 
-  let mouse = { x: null, y: null };
-
+  let mouseTrail = [];
+  
   document.addEventListener('mousemove', (e) => {
+    mouse.prevX = mouse.x;
+    mouse.prevY = mouse.y;
     mouse.x = e.clientX;
     mouse.y = e.clientY;
+
+    // Calculate velocity
+    const vx = mouse.x - (mouse.prevX || mouse.x);
+    const vy = mouse.y - (mouse.prevY || mouse.y);
+    const velocity = Math.sqrt(vx * vx + vy * vy);
+
+    // Create more particles based on velocity
+    const numParticles = Math.min(Math.floor(velocity / 2) + 3, 15);
     
-    for (let i = 0; i < 8; i++) {  // More particles
-      particles.push(new Particle(mouse.x, mouse.y));
+    for (let i = 0; i < numParticles; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 2;
+      const particle = new Particle(mouse.x, mouse.y);
+      
+      // Add some perpendicular velocity for swirling effect
+      particle.vx = Math.cos(angle) * speed - vx * 0.1;
+      particle.vy = Math.sin(angle) * speed - vy * 0.1;
+      
+      particles.push(particle);
     }
-    
+
+    // Store mouse trail
+    mouseTrail.push({ x: mouse.x, y: mouse.y, hue: hue });
+    if (mouseTrail.length > 20) mouseTrail.shift();
+
     hue += 1;
     if (hue > 360) hue = 0;
   });
 
   function animate() {
-    // Clear with more transparency for faster fade
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw connections between nearby particles (fluid mesh)
-    ctx.strokeStyle = `hsla(${hue}, 100%, 60%, 0.1)`;
-    ctx.lineWidth = 0.5;
-    
+    // Draw flowing connections between particles
+    ctx.lineWidth = 1;
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
         const dy = particles[i].y - particles[j].y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        if (distance < 50) {  // Connect nearby particles
+
+        if (distance < 60) {
+          const alpha = (1 - distance / 60) * 0.3 * 
+                       (particles[i].life / particles[i].maxLife);
+          ctx.strokeStyle = `hsla(${particles[i].hue}, 100%, 60%, ${alpha})`;
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
@@ -923,11 +968,12 @@ if (canvas) {
       particles[i].update();
       particles[i].draw();
 
-      if (particles[i].life <= 0 || particles[i].size <= 0.2) {
+      if (particles[i].life <= 0) {
         particles.splice(i, 1);
       }
     }
 
+    // Limit particles
     if (particles.length > particleCount) {
       particles.splice(0, particles.length - particleCount);
     }
@@ -942,5 +988,5 @@ if (canvas) {
     canvas.height = window.innerHeight;
   });
 
-  console.log('Custom fluid effect initialized!');
+  console.log('Liquid fluid effect initialized!');
 }

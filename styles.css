@@ -566,20 +566,21 @@ p{
   position: absolute;
   top: 15px;
   right: 15px;
-  background: #f0f0f0;  /* Add background */
-  border: 2px solid #ddd;  /* Add border */
-  font-size: 30px;  /* Slightly smaller */
+  background: #f0f0f0;
+  border: 2px solid #ddd;
+  font-size: 30px;
   color: #333;
   cursor: pointer;
   width: 45px;
   height: 45px;
-  border-radius: 50%;  /* Make it circular */
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
   font-weight: bold;
   line-height: 1;
+  z-index: 1002;  /* ADD THIS - Higher than hamburger button */
 }
 
 .close-btn:hover {
@@ -587,6 +588,12 @@ p{
   color: white;
   border-color: #667eea;
   transform: rotate(90deg);
+}
+
+/* Hide hamburger button when menu is open */
+.hamburger-btn.active {
+  opacity: 0;
+  pointer-events: none;
 }
 
 
@@ -623,4 +630,69 @@ body.menu-open {
   .slide-menu {
     width: 320px;
   }
+}
+
+/* Menu Navigation Links */
+.menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.menu-link {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #667eea;
+  text-decoration: none;
+  padding: 10px 0;
+  transition: all 0.3s ease;
+  display: inline-block;
+  position: relative;
+}
+
+/* Hover Effect - Move up and underline */
+.menu-link:hover {
+  transform: translateY(-3px);
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+.menu-link:active {
+  transform: translateY(-1px);
+}
+
+/* Settings Page Styles */
+.settings-page {
+  display: none;
+  padding: 20px;
+}
+
+.settings-page.active {
+  display: block;
+}
+
+.settings-page h2 {
+  color: #667eea;
+  margin-bottom: 20px;
+}
+
+.setting-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.setting-item h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.setting-item p {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 10px;
 }

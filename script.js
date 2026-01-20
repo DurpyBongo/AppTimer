@@ -828,41 +828,88 @@ if (saveNotificationMsgBtn && customNotificationMsgInput) {
 loadNotificationMsg();
 
 // ============================
-// 12) WebGL Fluid Simulation
+// 12) Custom Fluid Cursor Effect
 // ============================
 const canvas = document.getElementById('fluidCanvas');
 
-if (canvas && typeof webglFluid === 'function') {
-  webglFluid(canvas, {
-    IMMEDIATE: true,
-    TRIGGER: 'hover',
-    SIM_RESOLUTION: 128,
-    DYE_RESOLUTION: 1024,
-    DENSITY_DISSIPATION: 1,
-    VELOCITY_DISSIPATION: 0.2,
-    PRESSURE: 0.8,
-    PRESSURE_ITERATIONS: 20,
-    CURL: 30,
-    SPLAT_RADIUS: 0.25,
-    SPLAT_FORCE: 6000,
-    SHADING: true,
-    COLORFUL: true,
-    COLOR_UPDATE_SPEED: 10,
-    PAUSED: false,
-    BACK_COLOR: { r: 0, g: 0, b: 0 },
-    TRANSPARENT: true,
-    BLOOM: true,
-    BLOOM_ITERATIONS: 8,
-    BLOOM_RESOLUTION: 256,
-    BLOOM_INTENSITY: 0.8,
-    BLOOM_THRESHOLD: 0.6,
-    BLOOM_SOFT_KNEE: 0.7,
-    SUNRAYS: true,
-    SUNRAYS_RESOLUTION: 196,
-    SUNRAYS_WEIGHT: 1.0,
+if (canvas) {
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  const particleCount = 100;
+  let hue = 0;
+
+  class Particle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * 15 + 5;
+      this.speedX = Math.random() * 3 - 1.5;
+      this.speedY = Math.random() * 3 - 1.5;
+      this.color = `hsl(${hue}, 100%, 50%)`;
+      this.life = 100;
+    }
+
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.life -= 1;
+      if (this.size > 0.3) this.size -= 0.1;
+    }
+
+    draw() {
+      ctx.fillStyle = this.color;
+      ctx.globalAlpha = this.life / 100;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  let mouse = { x: null, y: null };
+
+  canvas.addEventListener('mousemove', (e) => {
+    mouse.x = e.x;
+    mouse.y = e.y;
+    
+    for (let i = 0; i < 3; i++) {
+      particles.push(new Particle(mouse.x, mouse.y));
+    }
+    
+    hue += 2;
+    if (hue > 360) hue = 0;
   });
-  
-  console.log('Fluid simulation initialized!');
-} else {
-  console.error('webglFluid not loaded or canvas not found');
+
+  function animate() {
+    ctx.globalAlpha = 0.05;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      particles[i].update();
+      particles[i].draw();
+
+      if (particles[i].life <= 0 || particles[i].size <= 0.3) {
+        particles.splice(i, 1);
+      }
+    }
+
+    if (particles.length > particleCount) {
+      particles.splice(0, particles.length - particleCount);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  console.log('Custom fluid effect initialized!');
 }

@@ -10,10 +10,23 @@ body{
   min-height: 100vh;
   padding: 20px;
   color: #333;
-  background: #0a0a0a;
-  overflow: hidden;
-}
 
+  background: linear-gradient(
+    90deg,
+    #ff004c,
+    #ff7a00,
+    #ffe600,
+    #2bff00,
+    #00ffd5,
+    #0066ff,
+    #8a2be2,
+    #ff004c
+  );
+  background-size: 400% 400%;
+  animation: rainbowShift 10s ease infinite;
+
+  overflow: hidden; /* no page scroll */
+}
 
 @keyframes rainbowShift{
   0% { background-position: 0% 50%; }

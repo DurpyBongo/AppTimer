@@ -336,21 +336,27 @@ function formatRemaining(totalSeconds, style = "clock") {
 
 function startCountdown(displayEl, totalSeconds, onDone) {
   const endTime = Date.now() + totalSeconds * 1000;
+  let finished = false;
+
+  const finish = () => {
+    if (finished) return true;   // already finished once
+    finished = true;
+    displayEl.textContent = "Done!";
+    onDone?.();
+    return true;
+  };
 
   const render = () => {
     const remainingMs = endTime - Date.now();
     const remainingSec = Math.max(0, Math.ceil(remainingMs / 1000));
-    displayEl.textContent = `Remaining: ${formatRemaining(remainingSec, "clock")}`;
 
-    if (remainingSec <= 0) {
-      displayEl.textContent = "Done!";
-      onDone?.();
-      return true; // done
-    }
+    if (remainingSec <= 0) return finish();
+
+    displayEl.textContent = `Remaining: ${formatRemaining(remainingSec, "clock")}`;
     return false;
   };
 
-  // Render immediately
+  // Initial paint
   if (render()) return null;
 
   const intervalId = setInterval(() => {
@@ -359,6 +365,7 @@ function startCountdown(displayEl, totalSeconds, onDone) {
 
   return intervalId;
 }
+
 
 
 

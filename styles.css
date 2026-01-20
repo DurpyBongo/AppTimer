@@ -484,3 +484,13 @@ p{
   opacity: 1;
   transform: translateX(-50%) translateY(-6px);
 }
+
+/* Paused timer visual indicator */
+.timer-card.paused {
+  opacity: 0.7;
+  border-color: #ffa500;
+}
+
+.timer-card.paused .time {
+  color: #ffa500;
+}

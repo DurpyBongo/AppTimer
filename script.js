@@ -335,11 +335,13 @@ function formatRemaining(totalSeconds, style = "clock") {
 }
 
 function startCountdown(displayEl, totalSeconds, onDone) {
-  const endTime = Date.now() + totalSeconds * 1000;
+  let remainingSeconds = totalSeconds;
+  let intervalId = null;
+  let isPaused = false;
   let finished = false;
 
   const finish = () => {
-    if (finished) return true;   // already finished once
+    if (finished) return true;
     finished = true;
     displayEl.textContent = "Done!";
     onDone?.();
@@ -347,25 +349,40 @@ function startCountdown(displayEl, totalSeconds, onDone) {
   };
 
   const render = () => {
-    const remainingMs = endTime - Date.now();
-    const remainingSec = Math.max(0, Math.ceil(remainingMs / 1000));
-
-    if (remainingSec <= 0) return finish();
-
-    displayEl.textContent = `Remaining: ${formatRemaining(remainingSec, "clock")}`;
+    if (remainingSeconds <= 0) return finish();
+    displayEl.textContent = `Remaining: ${formatRemaining(remainingSeconds, "clock")}`;
     return false;
   };
 
-  // Initial paint
-  if (render()) return null;
+  const tick = () => {
+    if (isPaused) return;
+    remainingSeconds--;
+    if (render()) {
+      clearInterval(intervalId);
+    }
+  };
 
-  const intervalId = setInterval(() => {
-    if (render()) clearInterval(intervalId);
-  }, 1000);
+  // Initial render
+  render();
 
-  return intervalId;
+  // Start the interval
+  intervalId = setInterval(tick, 1000);
+
+  // Return control object
+  return {
+    pause: () => {
+      isPaused = true;
+    },
+    resume: () => {
+      isPaused = false;
+    },
+    stop: () => {
+      clearInterval(intervalId);
+    },
+    isPaused: () => isPaused,
+    isFinished: () => finished
+  };
 }
-
 
 
 
@@ -446,32 +463,32 @@ timerForm?.addEventListener("submit", (event) => {
   time.className = "time";
 
   const actions = document.createElement("div");
-  actions.className = "actions";
-  actions.style.display = "flex";
-  actions.style.gap = "10px";
-  actions.style.justifyContent = "flex-end";
+actions.className = "actions";
+actions.style.display = "flex";
+actions.style.gap = "10px";
+actions.style.justifyContent = "flex-end";
 
-  const stopBtn = document.createElement("button");
-  stopBtn.type = "button";
-  stopBtn.textContent = "Stop";
+// Create BOTH buttons
+const pauseBtn = document.createElement("button");
+pauseBtn.type = "button";
+pauseBtn.textContent = "Pause";
 
-  card.appendChild(headerRow);
-  card.appendChild(soundLine);
-  card.appendChild(time);
-  card.appendChild(actions);
-  actions.appendChild(stopBtn);
+const stopBtn = document.createElement("button");
+stopBtn.type = "button";
+stopBtn.textContent = "Stop";
 
-  timersList.appendChild(card);
+card.appendChild(headerRow);
+card.appendChild(soundLine);
+card.appendChild(time);
+card.appendChild(actions);
+actions.appendChild(pauseBtn);  // ← Add pause button FIRST
+actions.appendChild(stopBtn);   // ← Then stop button
 
-  let intervalId = null;
+timersList.appendChild(card);
 
-  stopBtn.addEventListener("click", () => {
-    if (intervalId) clearInterval(intervalId);
-    stopAlarm();
-    card.remove(); // remove from Active Timers
-  });
+// Start countdown and get controls (no more intervalId variable)
+const timerControls = startCountdown(time, totalSeconds, () => {
 
-  intervalId = startCountdown(time, totalSeconds, () => {
     notifyTimerDone(appName);
     stopAlarm();
 
@@ -501,8 +518,31 @@ timerForm?.addEventListener("submit", (event) => {
     setTimeout(() => card.remove(), 800);
   });
 
+  // Pause/Resume button handler
+  pauseBtn.addEventListener("click", () => {
+    if (timerControls.isPaused()) {
+      timerControls.resume();
+      pauseBtn.textContent = "Pause";
+      card.classList.remove("paused");
+      toast("Timer resumed");
+    } else {
+      timerControls.pause();
+      pauseBtn.textContent = "Resume";
+      card.classList.add("paused");
+      toast("Timer paused");
+    }
+  });
+
+  // Stop button handler
+  stopBtn.addEventListener("click", () => {
+    timerControls.stop();
+    stopAlarm();
+    card.remove();
+  });
+
   // Reset form
   timerForm.reset();
+
   hoursInput.value = 0;
   minutesInput.value = 0;
   secondsInput.value = 0;

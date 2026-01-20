@@ -570,25 +570,35 @@ const closeBtn = document.getElementById('closeBtn');
 const menuOverlay = document.getElementById('menuOverlay');
 
 function openMenu() {
-  slideMenu.classList.add('active');
-  menuOverlay.classList.add('active');
-  hamburgerBtn.classList.add('active');
+  if (slideMenu) slideMenu.classList.add('active');
+  if (menuOverlay) menuOverlay.classList.add('active');
+  if (hamburgerBtn) hamburgerBtn.classList.add('active');
   document.body.classList.add('menu-open');
 }
 
 function closeMenu() {
-  slideMenu.classList.remove('active');
-  menuOverlay.classList.remove('active');
-  hamburgerBtn.classList.remove('active');
+  if (slideMenu) slideMenu.classList.remove('active');
+  if (menuOverlay) menuOverlay.classList.remove('active');
+  if (hamburgerBtn) hamburgerBtn.classList.remove('active');
   document.body.classList.remove('menu-open');
 }
 
-hamburgerBtn?.addEventListener('click', openMenu);
-closeBtn?.addEventListener('click', closeMenu);
-menuOverlay?.addEventListener('click', closeMenu);
+if (hamburgerBtn) {
+  hamburgerBtn.addEventListener('click', openMenu);
+}
+
+if (closeBtn) {
+  closeBtn.addEventListener('click', closeMenu);
+  console.log('Close button listener attached!'); // Debug line
+}
+
+if (menuOverlay) {
+  menuOverlay.addEventListener('click', closeMenu);
+}
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && slideMenu?.classList.contains('active')) {
     closeMenu();
   }
 });
+

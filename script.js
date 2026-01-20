@@ -339,9 +339,10 @@ function startCountdown(displayEl, totalSeconds, onDone) {
   let intervalId = null;
   let isPaused = false;
   let finished = false;
+  let stopped = false;  // ← ADD THIS
 
   const finish = () => {
-    if (finished) return true;
+    if (finished || stopped) return true;  // ← CHECK stopped flag
     finished = true;
     displayEl.textContent = "Done!";
     onDone?.();
@@ -349,13 +350,14 @@ function startCountdown(displayEl, totalSeconds, onDone) {
   };
 
   const render = () => {
+    if (stopped) return true;  // ← ADD THIS CHECK
     if (remainingSeconds <= 0) return finish();
     displayEl.textContent = `Remaining: ${formatRemaining(remainingSeconds, "clock")}`;
     return false;
   };
 
   const tick = () => {
-    if (isPaused) return;
+    if (isPaused || stopped) return;  // ← ADD stopped check here too
     remainingSeconds--;
     if (render()) {
       clearInterval(intervalId);
@@ -377,6 +379,7 @@ function startCountdown(displayEl, totalSeconds, onDone) {
       isPaused = false;
     },
     stop: () => {
+      stopped = true;  // ← SET THE FLAG
       clearInterval(intervalId);
     },
     isPaused: () => isPaused,

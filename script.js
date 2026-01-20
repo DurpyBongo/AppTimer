@@ -602,3 +602,61 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+// ============================
+// 9) Settings Page Toggle
+// ============================
+const settingsLink = document.getElementById('settingsLink');
+const homeLink = document.getElementById('homeLink');
+const settingsPage = document.getElementById('settingsPage');
+const mainContent = document.querySelector('.main');
+
+function showSettings() {
+  if (mainContent) mainContent.style.display = 'none';
+  if (settingsPage) settingsPage.classList.add('active');
+  closeMenu();
+}
+
+function showTimer() {
+  if (mainContent) mainContent.style.display = 'flex';
+  if (settingsPage) settingsPage.classList.remove('active');
+  closeMenu();
+}
+
+if (settingsLink) {
+  settingsLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSettings();
+  });
+}
+
+if (homeLink) {
+  homeLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    showTimer();
+  });
+}
+
+// Settings page functionality
+const testNotificationBtn = document.getElementById('testNotification');
+if (testNotificationBtn) {
+  testNotificationBtn.addEventListener('click', () => {
+    if (Notification.permission === 'granted') {
+      new Notification('Test Notification', { body: 'Your notifications are working!' });
+      toast('Test notification sent!');
+    } else {
+      toast('Please enable notifications first');
+    }
+  });
+}
+
+const clearAllPresetsBtn = document.getElementById('clearAllPresets');
+if (clearAllPresetsBtn) {
+  clearAllPresetsBtn.addEventListener('click', () => {
+    if (confirm('Are you sure you want to delete all saved timers?')) {
+      presets = [];
+      savePresets(presets);
+      renderPresets();
+      toast('All saved timers cleared');
+    }
+  });
+}

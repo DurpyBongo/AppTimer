@@ -25,13 +25,39 @@ function savePresets(list) {
 }
 let presets = loadPresets();
 
+let presets = loadPresets();
+
+// Custom notification message (loaded later)
+let customNotificationMsg = "";
+
 // Notification helper
 function notifyTimerDone(appName) {
   if (!("Notification" in window)) return;
   if (Notification.permission === "granted") {
-    new Notification("Timer done", { body: `${appName} finished.` });
+    // Use custom message if set, otherwise default
+    let message = customNotificationMsg || `${appName} finished.`;
+    
+    // Replace {app} placeholder with actual app name
+    message = message.replace(/{app}/g, appName);
+    
+    new Notification("Timer done", { body: message });
   }
 }
+
+// Notification helper
+function notifyTimerDone(appName) {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "granted") {
+    // Use custom message if set, otherwise default
+    let message = customNotificationMsg || `${appName} finished.`;
+    
+    // Replace {app} placeholder with actual app name
+    message = message.replace(/{app}/g, appName);
+    
+    new Notification("Timer done", { body: message });
+  }
+}
+
 
 // Alarm audio helper
 let currentAlarmAudio = null;
@@ -762,3 +788,50 @@ if (saveDefaultSoundBtn && defaultSoundFileInput) {
 
 // Initialize
 loadDefaultSound();
+
+
+
+// ============================
+// 11) Custom Notification Message
+// ============================
+const NOTIFICATION_MSG_KEY = "app_timer_notification_msg_v1";
+
+// Load saved notification message
+function loadNotificationMsg() {
+  try {
+    const saved = localStorage.getItem(NOTIFICATION_MSG_KEY);
+    if (saved) {
+      customNotificationMsg = saved;
+      const input = document.getElementById('customNotificationMsg');
+      if (input) input.value = saved;
+    }
+  } catch (e) {
+    console.error('Error loading notification message:', e);
+  }
+}
+
+// Save notification message
+function saveNotificationMsg(msg) {
+  try {
+    localStorage.setItem(NOTIFICATION_MSG_KEY, msg);
+    customNotificationMsg = msg;
+    toast('Notification message saved!');
+  } catch (e) {
+    console.error('Error saving notification message:', e);
+    toast('Error saving message');
+  }
+}
+
+// Save button handler
+const saveNotificationMsgBtn = document.getElementById('saveNotificationMsg');
+const customNotificationMsgInput = document.getElementById('customNotificationMsg');
+
+if (saveNotificationMsgBtn && customNotificationMsgInput) {
+  saveNotificationMsgBtn.addEventListener('click', () => {
+    const msg = customNotificationMsgInput.value.trim();
+    saveNotificationMsg(msg);
+  });
+}
+
+// Initialize (add to existing initialization)
+loadNotificationMsg();

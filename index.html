@@ -122,12 +122,31 @@
         <h2>⚙️ Settings</h2>
         
         <div class="setting-item">
-          <h3>Notifications</h3>
-          <p>Manage how you receive timer notifications</p>
-          <button id="testNotification" class="btn-primary" style="width: auto; padding: 8px 16px;">
-            Test Notification
-          </button>
-        </div>
+  <h3>Notifications</h3>
+  <p>Manage how you receive timer notifications</p>
+  
+  <label for="customNotificationMsg" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">
+    Custom Notification Message:
+  </label>
+  <input 
+    type="text" 
+    id="customNotificationMsg" 
+    placeholder="e.g., Timer finished! Time to check your app"
+    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 10px;"
+  />
+  <p style="font-size: 0.8rem; color: #999; margin-bottom: 10px;">
+    Use {app} to insert the app name. Leave empty for default message.
+  </p>
+  
+  <button id="saveNotificationMsg" style="background: #667eea; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">
+    Save Message
+  </button>
+  
+  <button id="testNotification" class="btn-primary" style="width: auto; padding: 8px 16px;">
+    Test Notification
+  </button>
+</div>
+
         
         <div class="setting-item">
   <h3>Default Sound</h3>

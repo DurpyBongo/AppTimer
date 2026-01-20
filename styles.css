@@ -28,10 +28,13 @@ body{
 
   height: calc(100vh - 40px);
   background: rgba(255, 255, 255, 0.85);  /* Semi-transparent white */
-  backdrop-filter: blur(10px);  /* Adds blur effect */  border-radius: 12px;
+  backdrop-filter: blur(10px);  /* Adds blur effect */  
+  border-radius: 12px;
 
   overflow-y: auto;   /* <-- change from hidden */
   overflow-x: hidden;
+  position: relative;  /* ADD THIS */
+  z-index: 10;  /* ADD THIS - Higher than canvas */
 }
 
 
@@ -707,9 +710,10 @@ canvas {
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  z-index: 2 !important;
+  z-index: 1 !important;  /* ← Changed from 2 to 1 */
   pointer-events: none !important;
 }
+
 
 
 

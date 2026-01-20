@@ -1,4 +1,9 @@
 // ============================
+// WAIT FOR DOM TO BE READY
+// ============================
+document.addEventListener('DOMContentLoaded', function() {
+
+// ============================
 // 0) Helpers / Toast / Storage
 // ============================
 const toastEl = document.getElementById("toast");
@@ -828,4 +833,4 @@ if (saveNotificationMsgBtn && customNotificationMsgInput) {
 loadNotificationMsg();
 
 
-
+}); // ← CLOSE DOMContentLoaded - ADD THIS AT THE VERY END!

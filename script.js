@@ -476,19 +476,26 @@ timerForm?.addEventListener("submit", (event) => {
     stopAlarm();
 
     if (soundType === "default") {
-      currentAlarmAudio = notificationSound;
-      if (currentAlarmAudio) {
-        currentAlarmAudio.currentTime = 0;
-        currentAlarmAudio.play();
-      }
-    } else if (soundType === "upload" && soundData) {
-      const url = URL.createObjectURL(soundData);
-      currentAlarmAudio = new Audio(url);
-      currentAlarmAudio.play();
-    } else if (soundType === "browse" && soundData) {
-      currentAlarmAudio = new Audio(soundData);
-      currentAlarmAudio.play();
-    }
+  currentAlarmAudio = notificationSound;
+  if (currentAlarmAudio) {
+    currentAlarmAudio.currentTime = 0;
+    currentAlarmAudio.play();
+  }
+} else if (soundType === "upload" && soundData) {
+  const url = URL.createObjectURL(soundData);
+  currentAlarmAudio = new Audio(url);
+  currentAlarmAudio.addEventListener(
+    "ended",
+    () => URL.revokeObjectURL(url),
+    { once: true }
+  );
+  currentAlarmAudio.play();
+} else if (soundType === "browse" && soundData) {
+  currentAlarmAudio = new Audio(soundData);
+  currentAlarmAudio.play();
+}
+
+
 
     // remove after short delay so user sees Done!
     setTimeout(() => card.remove(), 800);

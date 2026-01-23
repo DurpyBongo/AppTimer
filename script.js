@@ -1,9 +1,4 @@
 // ============================
-// WAIT FOR DOM TO BE READY
-// ============================
-document.addEventListener('DOMContentLoaded', function() {
-
-// ============================
 // 0) Helpers / Toast / Storage
 // ============================
 const toastEl = document.getElementById("toast");
@@ -832,5 +827,120 @@ if (saveNotificationMsgBtn && customNotificationMsgInput) {
 // Initialize (add to existing initialization)
 loadNotificationMsg();
 
+// ============================
+// 12) Custom Fluid Cursor Effect
+// ============================
+const canvas = document.getElementById('fluidCanvas');
 
-}); // ← CLOSE DOMContentLoaded - ADD THIS AT THE VERY END!
+if (canvas) {
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  const particleCount = 200;
+  let hue = 0;
+
+  class Particle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * 3 + 1;  // Smaller particles
+      this.speedX = (Math.random() - 0.5) * 3;
+      this.speedY = (Math.random() - 0.5) * 3;
+      this.color = `hsla(${hue}, 100%, 60%, 0.6)`;  // Semi-transparent
+      this.life = 60;  // Dissipate faster
+      this.initialLife = 60;
+    }
+
+    update() {
+      // Add gravity and drag for fluid motion
+      this.speedY += 0.1;  // Gravity
+      this.speedX *= 0.95;  // Drag
+      this.speedY *= 0.95;
+      
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.life -= 1;
+      if (this.size > 0.2) this.size -= 0.05;
+    }
+
+    draw() {
+      const alpha = this.life / this.initialLife;
+      ctx.fillStyle = `hsla(${hue}, 100%, 60%, ${alpha * 0.4})`;  // Very transparent
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Subtle glow
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = this.color;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+  }
+
+  let mouse = { x: null, y: null };
+
+  document.addEventListener('mousemove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    
+    for (let i = 0; i < 8; i++) {  // More particles
+      particles.push(new Particle(mouse.x, mouse.y));
+    }
+    
+    hue += 1;
+    if (hue > 360) hue = 0;
+  });
+
+  function animate() {
+    // Clear with more transparency for faster fade
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw connections between nearby particles (fluid mesh)
+    ctx.strokeStyle = `hsla(${hue}, 100%, 60%, 0.1)`;
+    ctx.lineWidth = 0.5;
+    
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < 50) {  // Connect nearby particles
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Update and draw particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      particles[i].update();
+      particles[i].draw();
+
+      if (particles[i].life <= 0 || particles[i].size <= 0.2) {
+        particles.splice(i, 1);
+      }
+    }
+
+    if (particles.length > particleCount) {
+      particles.splice(0, particles.length - particleCount);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  console.log('Custom fluid effect initialized!');
+}

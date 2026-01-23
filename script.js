@@ -352,14 +352,18 @@ function formatRemaining(totalSeconds, style = "clock") {
 }
 
 function startCountdown(displayEl, totalSeconds, onDone) {
-  let remainingSeconds = totalSeconds;
+  const startTime = Date.now();
+  const endTime = startTime + (totalSeconds * 1000);
+  
   let intervalId = null;
   let isPaused = false;
+  let pausedTime = 0;  // Total time spent paused (in ms)
+  let pauseStartTime = 0;
   let finished = false;
-  let stopped = false;  // ← ADD THIS
+  let stopped = false;
 
   const finish = () => {
-    if (finished || stopped) return true;  // ← CHECK stopped flag
+    if (finished || stopped) return true;
     finished = true;
     displayEl.textContent = "Done!";
     onDone?.();
@@ -367,15 +371,22 @@ function startCountdown(displayEl, totalSeconds, onDone) {
   };
 
   const render = () => {
-    if (stopped) return true;  // ← ADD THIS CHECK
+    if (stopped) return true;
+    
+    // Calculate remaining time based on actual clock time
+    const now = Date.now();
+    const adjustedEndTime = endTime + pausedTime;
+    const remainingMs = adjustedEndTime - now;
+    const remainingSeconds = Math.max(0, Math.floor(remainingMs / 1000));
+    
     if (remainingSeconds <= 0) return finish();
+    
     displayEl.textContent = `Remaining: ${formatRemaining(remainingSeconds, "clock")}`;
     return false;
   };
 
   const tick = () => {
-    if (isPaused || stopped) return;  // ← ADD stopped check here too
-    remainingSeconds--;
+    if (isPaused || stopped) return;
     if (render()) {
       clearInterval(intervalId);
     }
@@ -384,25 +395,32 @@ function startCountdown(displayEl, totalSeconds, onDone) {
   // Initial render
   render();
 
-  // Start the interval
+  // Start the interval (even if throttled, time calculation is accurate)
   intervalId = setInterval(tick, 1000);
 
   // Return control object
   return {
     pause: () => {
-      isPaused = true;
+      if (!isPaused) {
+        isPaused = true;
+        pauseStartTime = Date.now();
+      }
     },
     resume: () => {
-      isPaused = false;
+      if (isPaused) {
+        isPaused = false;
+        pausedTime += (Date.now() - pauseStartTime);
+      }
     },
     stop: () => {
-      stopped = true;  // ← SET THE FLAG
+      stopped = true;
       clearInterval(intervalId);
     },
     isPaused: () => isPaused,
     isFinished: () => finished
   };
 }
+
 
 
 

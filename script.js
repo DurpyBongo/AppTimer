@@ -895,9 +895,9 @@ if (canvas) {
   });
 
   function animate() {
-    // Clear with more transparency for faster fade
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Clear with FULL transparency so UI shows through
+  ctx.clearRect(0, 0, canvas.width, canvas.height);  // ← Use clearRect instead
+
 
     // Draw connections between nearby particles (fluid mesh)
     ctx.strokeStyle = `hsla(${hue}, 100%, 60%, 0.1)`;

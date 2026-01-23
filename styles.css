@@ -22,6 +22,7 @@ body{
    Container & Layout
    ============================ */
 .container{
+  /* Remove ALL z-index and position */
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
@@ -31,8 +32,6 @@ body{
   border-radius: 12px;
   overflow-y: auto;
   overflow-x: hidden;
-  position: relative;  /* ← Add this */
-  /* Remove z-index: 10; */
 }
 
 
@@ -709,9 +708,10 @@ body.menu-open {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -1;  /* ← Keep this negative */
+  z-index: 5;  /* ← Above container (which has no z-index) */
   pointer-events: none;
 }
+
 
 
 
